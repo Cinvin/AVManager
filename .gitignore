@@ -1,0 +1,6 @@
+venv
+face/traindata/data_X.bin
+face/traindata/data_y.bin
+face/traindata/predict.clf
+.DS_Store
+*/.DS_Store

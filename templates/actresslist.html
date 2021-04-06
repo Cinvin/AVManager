@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<div class="container-fluid">
+    <div class="row">
+        <div id="waterfall">
+            {% for actress in pagination.items %}
+            <div class="item">
+                <a class="avatar-box text-center" href="{{ url_for('movielist',filtertype='actress',filterkey=actress.id) }}">
+                    <div class="photo-frame">
+                        {% if actress.piccode %}
+                        <img src="https://pics.dmm.co.jp/mono/actjpgs/{{ actress.piccode }}.jpg" title="">
+                        {% else %}
+                        <img src="https://pics.dmm.co.jp/mono/actjpgs/nowprinting.gif" title="">
+                        {% endif %}
+                    </div>
+                    <div class="photo-info">
+                        <span>{{ actress.actname }}</span>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

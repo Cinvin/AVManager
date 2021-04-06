@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<div class="container">
+        <h3>{{ movie.code }} {{ movie.title }}</h3>
+        <div class="row movie">
+            <div class="col-md-9 screencap">
+                <a class="bigImage" href="https://jp.netcdn.space/digital/video/{{ movie.piccode }}/{{ movie.piccode }}pl.jpg" title="{{ movie.code }} {{ movie.title }}"><img src="https://jp.netcdn.space/digital/video/{{ movie.piccode }}/{{ movie.piccode }}pl.jpg"></a>
+            </div>
+            <div class="col-md-3 info">
+                <p><span class="header">识别码:</span> <span style="color:#CC0000;">{{ movie.code }}</span>
+                    {% if movie.is_favorite() %}
+                    <span class="glyphicon glyphicon-heart" id="btn_favorite_code" aria-hidden="true" onclick="favorite(this.id,1,{{ movie.id }})"></span>
+                    {% else %}
+                    <span class="glyphicon glyphicon-heart-empty" id="btn_favorite_code_empty" aria-hidden="true" onclick="favorite(this.id,1,{{ movie.id }})"></span>
+                    {% endif %}
+                </p>
+                {% if movie.rdate %}
+                <p><span class="header">发行时间:</span> {{ movie.rdate.strftime("%Y-%m-%d") }}</p>
+                {% endif %}
+                <p><span class="header">长度:</span> {{ movie.length }}分钟</p>
+                {% if movie.director %}
+                <p><span class="header">导演:</span>
+                    <a href="{{ url_for('movielist',filtertype='director',filterkey=movie.director.id) }}">{{ movie.director.name }}</a>
+                </p>
+                {% endif %}
+                {% if movie.studio %}
+                <p class="header">制作商: </p>
+                <p>
+                    <a href="{{ url_for('movielist',filtertype='studio',filterkey=movie.studio.id) }}">{{ movie.studio.name }}</a>
+                    {% if movie.studio.is_favorite() %}
+                    <span class="glyphicon glyphicon-heart" id="btn_favorite_studio" aria-hidden="true" onclick="favorite(this.id,3,{{ movie.studio.id }})"></span>
+                    {% else %}
+                    <span class="glyphicon glyphicon-heart-empty" id="btn_favorite_studio_empty" aria-hidden="true" onclick="favorite(this.id,3,{{ movie.studio.id }})"></span>
+                    {% endif %}
+                </p>
+                {% endif %}
+                {% if movie.label %}
+                <p class="header">发行商: </p>
+                <p>
+                    <a href="{{ url_for('movielist',filtertype='label',filterkey=movie.label.id) }}">{{ movie.label.name }}</a>
+                    {% if movie.label.is_favorite() %}
+                    <span class="glyphicon glyphicon-heart" id="btn_favorite_label" aria-hidden="true" onclick="favorite(this.id,4,{{ movie.label.id }})"></span>
+                    {% else %}
+                    <span class="glyphicon glyphicon-heart-empty" id="btn_favorite_label_empty" aria-hidden="true" onclick="favorite(this.id,4,{{ movie.label.id }})"></span>
+                    {% endif %}
+                </p>
+                {% endif %}
+                {% if movie.series %}
+                <p class="header">系列:</p>
+                <p>
+                    <a href="{{ url_for('movielist',filtertype='series',filterkey=movie.series.id) }}">{{ movie.series.name }}</a>
+                    {% if movie.series.is_favorite() %}
+                    <span class="glyphicon glyphicon-heart" id="btn_favorite_series" aria-hidden="true" onclick="favorite(this.id,5,{{ movie.series.id }})"></span>
+                    {% else %}
+                    <span class="glyphicon glyphicon-heart-empty" id="btn_favorite_series_empty" aria-hidden="true" onclick="favorite(this.id,5,{{ movie.series.id }})"></span>
+                    {% endif %}
+                </p>
+                {% endif %}
+
+                {% if movie.genres %}
+                <p class="header">类别:</p>
+                    <p>
+                        {% for genre in movie.genres %}
+                        <span class="genre">
+                            <a href="{{ url_for('movielist',filtertype='genre',filterkey=genre.id) }}">{{ genre.name }}</a>
+                        </span>
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+
+    {% if movie.actresses.count()>0 %}
+    <h4>演员</h4>
+        <div id="avatar-waterfall">
+            {% for actress in movie.actresses %}
+            <div class="avatar-box">
+                <a href="{{ url_for('movielist',filtertype='actress',filterkey=actress.id) }}">
+                    <div class="photo-frame">
+                    {% if actress.piccode %}
+                    <img src="https://pics.dmm.co.jp/mono/actjpgs/{{ actress.piccode }}.jpg" title="">
+                    {% else %}
+                    <img src="https://pics.dmm.co.jp/mono/actjpgs/nowprinting.gif" title="">
+                    {% endif %}
+                </div>
+				<span>{{ actress.actname }}</span>
+                </a>
+                {% if actress.is_favorite() %}
+                <span class="glyphicon glyphicon-heart" id="btn_favorite_actress_{{actress.id}}" aria-hidden="true" onclick="favorite(this.id,2,{{ actress.id }})"></span>
+                {% else %}
+                <span class="glyphicon glyphicon-heart-empty" id="btn_favorite_actress_empty_{{actress.id}}" aria-hidden="true" onclick="favorite(this.id,2,{{ actress.id }})"></span>
+                {% endif %}
+
+			</div>
+            {% endfor %}
+        </div>
+    <div class="clearfix"></div>
+    {% endif %}
+    {% if movie.piccount>0 %}
+    <h4>样品图像</h4>
+        <div id="sample-waterfall">
+            {% for imgindex in range(1,movie.piccount+1) %}
+            <a class="sample-box" href="https://jp.netcdn.space/digital/video/{{ movie.piccode }}/{{ movie.piccode }}jp-{{ imgindex }}.jpg" title="{{ movie.title }} - 样品图像 - {{ imgindex }}">
+                <div class="photo-frame">
+				    <img src="https://jp.netcdn.space/digital/video/{{ movie.piccode }}/{{ movie.piccode }}-{{ imgindex }}.jpg">
+                </div>
+			</a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div id="promo"></div>
+
+    <div class="clearfix"></div>
+        <div class="hidden-xs">
+            <h4>链接</h4>
+            <div>
+                <p>
+                    <span class="genre"><a href="https://btsow.cam/search/s{{ movie.code }}/">磁力搜索</a></span>
+                    <span class="genre"><a href="https://jable.tv/videos/{{ movie.code.lower() }}/">jable</a></span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+<script src="{{url_for('static',filename='js/jquery.js')}}"></script>
+<!--Get请求-->
+<script>
+    var data={
+        'code':'{{movie.code}}',
+        'piccode':'{{movie.piccode}}'
+    }
+    $.ajax({
+        type:'GET',
+        url:'{{url_for("get_promo")}}',
+        data:data,
+        dataType:'text',
+        success:function(data){
+            if(data==''){
+                $('#promo').remove();
+                return;
+            }
+            d1=data.substring(0,1)
+            d2=data.substring(0,3)
+            $('#promo').append('<h4>介绍影片</h4><video controls autoplay style="height: 100%; width: 100%; cursor: none;">'
+        +'<source src="https://cc3001.dmm.co.jp/litevideo/freepv/'+d1+'/'+d2+'/'+data+'/'+data+'_dmb_w.mp4" type="video/mp4" res="720" label="1500 Kbps">'
+        +'<source src="https://cc3001.dmm.co.jp/litevideo/freepv/'+d1+'/'+d2+'/'+data+'/'+data+'_dm_w.mp4" type="video/mp4" res="480" label="1000 Kbps">'
+        +'<source src="https://cc3001.dmm.co.jp/litevideo/freepv/'+d1+'/'+d2+'/'+data+'/'+data+'_sm_w.mp4" type="video/mp4" res="240" label="300 Kbps">'
+        +'您的浏览器不支持 video 属性。'
+    +'</video>')
+        }
+    });
+
+
+
+    function favorite(domid,ftype,fid){
+        var classname = $("#"+domid).attr("class");
+        var val = classname == "glyphicon glyphicon-heart-empty"
+
+        $.post("{{url_for('favorite')}}", { 'ftype' : ftype, 'fid' : fid ,'val' : val} );
+
+        $("#"+domid).removeClass("glyphicon-heart glyphicon-heart-empty");
+        if(classname == "glyphicon glyphicon-heart-empty" ){
+            $("#"+domid).addClass("glyphicon glyphicon-heart");
+        }else{
+            $("#"+domid).addClass("glyphicon glyphicon-heart-empty");
+        }
+    }
+
+</script>

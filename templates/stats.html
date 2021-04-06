@@ -1,0 +1,10 @@
+<div class="container">
+    {% for echart in echarts %}
+    <div class="row">
+        <div class="col-md-12">
+            {{ echart | safe }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+

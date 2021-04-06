@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<div class="container-fluid">
+    <div class="row">
+        <div id="waterfall">
+            {% if actress %}
+            <div class="item">
+                <div class="avatar-box">
+                    <div class="photo-frame">
+                        {% if actress.piccode %}
+                        <img src="https://pics.dmm.co.jp/mono/actjpgs/{{ actress.piccode }}.jpg" title="">
+                        {% else %}
+                        <img src="https://pics.dmm.co.jp/mono/actjpgs/nowprinting.gif" title="">
+                        {% endif %}
+                    </div>
+                    <div class="photo-info">
+                        <span class="pb-10">{{ actress.actname }}</span>
+                        {% if actress.birthday %}
+                        <p>生日: {{ actress.birthday.strftime("%Y-%m-%d") }}</p>
+                        <p>年龄: {{ actress.age }}</p>
+                        {% endif %}
+                        {% if actress.height %}
+                        <p>身高: {{ actress.height }}cm</p>
+                        {% endif %}
+                        {% if actress.cup %}
+                        <p>罩杯: {{ actress.cup }}</p>
+                        {% endif %}
+                        {% if actress.bust %}
+                        <p>胸围: {{ actress.bust }}cm</p>
+                        {% endif %}
+                        {% if actress.waist %}
+                        <p>腰围: {{ actress.waist }}cm</p>
+                        {% endif %}
+                        {% if actress.hips %}
+                        <p>臀围: {{ actress.hips }}cm</p>
+                        {% endif %}
+                        {% if actress.birthplace %}
+                        <p>出生地: {{ actress.birthplace }}</p>
+                        {% endif %}
+                        {% if actress.hobby %}
+                        <p>爱好: {{ actress.hobby }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% for movie in pagination.items %}
+            <div class="item">
+                <a class="movie-box" href="{{ url_for('movie',cid = movie.piccode) }}">
+                    <div class="photo-frame">
+                        <img src="https://jp.netcdn.space/digital/video/{{ movie.piccode }}/{{ movie.piccode }}ps.jpg"
+                             title="{{movie.title}}">
+                    </div>
+                    <div class="photo-info">
+                        <span>{{movie.title}}<br><date>{{ movie.code }}</date> / {% if movie.rdate %}<date>{{ movie.rdate.strftime("%Y-%m-%d") }}</date>{% endif %}</span>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

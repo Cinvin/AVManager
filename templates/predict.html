@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<div class="container">
+    <div class="row">
+        <img src="" alt="" id="showIMG">
+        <input accept="image/jpeg,image/png"  type="file" id="uploadIMG" onchange="btnUploadFile(event)"/>
+    </div>
+    <p id="predict_fail" hidden>未识别出人脸</p>
+    <div class="container-fluid">
+        <div class="row">
+            <div id="waterfall"></div>
+        </div>
+    </div>
+</div>
+<script>
+    function btnUploadFile(e){
+$('#showIMG').attr("src",'{{ url_for("static",filename="img/loading.gif") }}')
+var imgFile = e.target.files[0]; //获取图片文件
+var formData = new FormData();  // 创建form对象
+formData.append('file', imgFile);  // 通过append向form对象添加数据
+formData.append('other', 'other')  // 如果还需要传替他参数的话
+$.ajax({
+    url: '{{url_for("predict_image")}}', //请求的接口地址
+    type: 'POST',
+    cache: false, //上传文件不需要缓存
+    data: formData,
+    processData: false, // 不要去处理发送的数据
+    contentType: false, // 不要去设置Content-Type请求头
+    success: function(data){
+        $('#showIMG').attr("src",data.img)
+        $('#waterfall').empty()
+        if (data.success==200){
+            $('#waterfall').append(data.html)
+            $('#predict_fail').hide()
+        }
+        else{
+            $('#predict_fail').show()
+        }
+
+    },
+    error: function(err){
+        console.log(err)
+    }
+})
+
+}
+</script>

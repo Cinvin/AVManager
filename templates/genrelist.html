@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<div class="container-fluid pt-10">
+    <div class="row genre-box">
+        {% for genre in genrelist %}
+        <a class="col-lg-2 col-md-2 col-sm-3 col-xs-6 text-center" href="{{ url_for('movielist',filtertype='genre',filterkey=genre.id) }}">{{ genre.name }}</a>
+        {% endfor %}
+    </div>
+</div>
