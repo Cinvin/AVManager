@@ -9,4 +9,5 @@
 数据库、人脸数据、训练模型[百度云盘  密码: vo9k](https://pan.baidu.com/s/1EGjdhzQcTSJ27ISqJBLBuA)  
 database.sql:爬取完成的数据  
 data_X6800、data_y6800:爬取的全部人脸数据  
-predict3094:前3094名女优训练出来的识别模型。
+predict3094:图片数量最多的3000+名女优训练出来的识别模型。  
+因内存不足没有拟合所有的数据
