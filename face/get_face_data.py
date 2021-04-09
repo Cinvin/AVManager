@@ -33,8 +33,7 @@ class GetActressImgData:
             .join(av_actress) \
             .filter(Actress.piccode.isnot(None), Actress.piccode.notin_(set_y)) \
             .order_by(func.count('*').desc()) \
-            .group_by(Actress.piccode) \
-            .having(func.count('*') >= 10).all()
+            .group_by(Actress.piccode).all()
 
         self.actcodelist = [x.piccode for x in result]
 
@@ -107,7 +106,7 @@ class GetActressImgData:
         self.data_X.extend(data)
         self.data_y.extend(data_y)
         self.actcount += 1
-        if self.actcount % 8 == 0:
+        if self.actcount % 64 == 0:
             self.savefile()
         self.datalock.release()
         print(

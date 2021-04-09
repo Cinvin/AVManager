@@ -36,10 +36,12 @@ def movielist(filtertype=None, filterkey=None, page_index=1):
 
         # 搜番号
         codequery = AV.query.with_entities(AV.code, AV.title, AV.rdate, AV.piccode).filter_by(code=filterkey)
-        if codequery.count() == 1:
+        codecount = codequery.count()
+        if codecount == 1:
             return redirect(url_for('movie', cid=codequery[0].piccode))
-        codequery = AV.query.with_entities(AV.code, AV.title, AV.rdate, AV.piccode).filter(
-            AV.code.like(f"%{filterkey}%"))
+        elif codecount == 0:
+            codequery = AV.query.with_entities(AV.code, AV.title, AV.rdate, AV.piccode).filter(
+                AV.code.like(f"%{filterkey}%"))
         resultquery = resultquery.union(codequery)
         # 搜标题
         titlequery = AV.query.with_entities(AV.code, AV.title, AV.rdate, AV.piccode).filter(
@@ -68,9 +70,12 @@ def movielist(filtertype=None, filterkey=None, page_index=1):
         pagination = AV.query.with_entities(AV.code, AV.title, AV.rdate, AV.piccode).filter_by(series_id=filterkey) \
             .order_by(AV.rdate.desc(), AV.code).paginate(page_index, per_page=30, error_out=False)
     elif filtertype == "genre":
-        genrequery = Genre.query.filter_by(id=filterkey).first().avs
-        pagination = genrequery.with_entities(AV.code, AV.title, AV.rdate, AV.piccode) \
-            .order_by(AV.rdate.desc(), AV.code).paginate(page_index, per_page=30, error_out=False)
+        genrequery = Genre.query.filter_by(id=filterkey).first()
+        if genrequery is not None:
+            pagination = genrequery.avs.with_entities(AV.code, AV.title, AV.rdate, AV.piccode) \
+                .order_by(AV.rdate.desc(), AV.code).paginate(page_index, per_page=30, error_out=False)
+        else:
+            pagination = None
     elif filtertype == "favorite":
         resultquery = AV.query.with_entities(AV.code, AV.title, AV.rdate, AV.piccode) \
             .filter(or_(

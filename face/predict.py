@@ -11,7 +11,7 @@ def predictimage(predict_image: bytes):
     im = PIL.Image.open(BytesIO(predict_image))
     im = im.convert('RGB')
     pilim = np.array(im)
-    path = os.getcwd() + '/face/traindata/predict.clf'
+    path = os.getcwd() + '/face/traindata/predict3094.clf'
     if os.path.exists(path):
         clf = joblib.load(path)
 
