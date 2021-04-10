@@ -145,8 +145,12 @@ def searchmovielist():
 def actresslist():
     page_index = request.args.get('page_index', 1)
     page_index = int(page_index)
+    counts = func.count(1)
     pagination = Actress.query.with_entities(Actress.id, Actress.actname, Actress.piccode) \
-        .filter(Actress.avs.any()).paginate(page_index, per_page=30, error_out=False)
+        .join(av_actress) \
+        .order_by(counts.desc(),Actress.piccode) \
+        .group_by(Actress.id) \
+        .paginate(page_index, per_page=30, error_out=False)
     return render_template('main.html', pagetype="actresslist", pagination=pagination)
 
 
