@@ -2,11 +2,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import and_
 
-sqlconnstr = "mysql+pymysql://root:123456@localhost/avbook"
+sqlconnstr = "mysql+pymysql://root:hsh2273653@localhost/avbook"
 
 app = Flask(__name__)
 app.debug=True
-app.config["SQLALCHEMY_DATABASE_URI"] =sqlconnstr
+app.config["SQLALCHEMY_DATABASE_URI"] = sqlconnstr
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 # http://www.pythondoc.com/flask-sqlalchemy/config.html
 db = SQLAlchemy(app)
@@ -32,6 +32,7 @@ class AV(db.Model):
     length = db.Column(db.Integer)
     piccode = db.Column(db.String(50), nullable=False)
     piccount = db.Column(db.Integer)
+    source = db.Column(db.Integer)
     actresses = db.relationship('Actress', secondary=av_actress, backref=db.backref('avs', lazy='dynamic'), lazy='dynamic')
     genres = db.relationship('Genre', secondary=av_genre, backref=db.backref('avs', lazy='dynamic'), lazy='dynamic')
 
@@ -75,6 +76,9 @@ class Genre(db.Model):
     __tablename__ = "t_genre"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     name = db.Column(db.String(50))
+    name_tw = db.Column(db.String(50))
+    name_ja = db.Column(db.String(50))
+    name_en = db.Column(db.String(50))
 
 class Label(db.Model):
     __tablename__ = "t_label"
@@ -98,7 +102,8 @@ class Series(db.Model):
 class Studio(db.Model):
     __tablename__ = "t_studio"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    name = db.Column(db.String(255))
+    name = db.Column(db.String(255), nullable=False)
+    mgscode = db.Column(db.String(64), nullable=True)
     avs = db.relationship('AV', backref='studio', lazy=True)
     def is_favorite(self):
         favorite = Favorite.query \

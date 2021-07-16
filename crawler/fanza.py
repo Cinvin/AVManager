@@ -48,3 +48,5 @@ def update_actress_piccode():
             else:
                 break
             sleep(0.5)
+
+update_actress_piccode()

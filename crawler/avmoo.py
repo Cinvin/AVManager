@@ -1,31 +1,21 @@
 from bs4 import BeautifulSoup
 import re
-import ssl
 import CrawlerHelper
 import minnano
-from datetime import datetime
-import sqlhelper
+from datetime import datetime,timedelta
 from time import sleep
 import sys
-
+from crawler import DBHelper
 sys.path.append("..")
 from model import *
 from sqlalchemy import create_engine, exists
 from sqlalchemy.orm import sessionmaker
 
+# setting
+freq = 0.4 # second
+avmoourl = 'avmoo.casa'
 
-# 图片
-#
-# 大图https://jp.netcdn.space/digital/video/ipx00590/ipx00590pl.jpg
-# https://pics.dmm.co.jp/digital/video/ssni00973/ssni00973pl.jpg
-# 小图https://jp.netcdn.space/digital/video/ipx00590/ipx00590jp-4.jpg
-# https://pics.dmm.co.jp/digital/video/ssni00975/ssni00975jp-6.jpg
-# 头像
-# https://pics.dmm.co.jp/mono/actjpgs/otosiro_sayaka.jpg
-
-# https://avmoo.cyou/cn/movie/fc7850d1cbf6f50a
 def spider_avmoo_movie_page(url, session):
-    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 爬取{url}")
     html = CrawlerHelper.get_requests(url)
     if html is None:
         html = CrawlerHelper.get_requests(url)
@@ -38,22 +28,16 @@ def spider_avmoo_movie_page(url, session):
     if len(html) == 0:
         print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 内容为空{url}")
         return
-
     bs = BeautifulSoup(html, "html.parser")
 
     # 番号+标题
     title = re.findall("<h3>(.*?)</h3>", html)
     # 番号
-    code = re.findall(('<p><span class="header">识别码:</span> <span style="color:#CC0000;">(.*?)</span></p>'), html)
+    code = re.findall(('<p><span class="header">品番:</span> <span style="color:#CC0000;">(.*?)</span></p>'), html)
     code = code[0]
 
     if code == "-000":
         return
-
-    # if sqlhelper.is_movie_exist(code):
-    #     print(f"[{ datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {code} 数据库中已存在 此条跳过")
-    #     #sleep(5)#防屏蔽
-    #     return
 
     # 标题
     title = title[0]
@@ -61,12 +45,12 @@ def spider_avmoo_movie_page(url, session):
 
     # 发行时间
 
-    findrdate = re.findall('<p><span class="header">发行时间:</span> (.*?)</p>', html)
+    findrdate = re.findall('<p><span class="header">発売日:</span> (.*?)</p>', html)
     rdate = None
     if len(findrdate) and len(findrdate[0]) > 0:
         rdate = findrdate[0]
 
-    findlength = re.findall('<p><span class="header">长度:</span> (\d*)分钟</p>', html)
+    findlength = re.findall('<p><span class="header">収録時間:</span> (\d*)分</p>', html)
     length = None
     if len(findlength) > 0:
         length = findlength[0]
@@ -126,79 +110,14 @@ def spider_avmoo_movie_page(url, session):
             genrelist.append(genre)
 
     # 保存
-    avitem = session.query(AV).filter_by(piccode=piccode).first()
-    if avitem is None:
-        avitem = AV()
-        session.add(avitem)
-
-    avitem.code = code
-    avitem.title = title
-    if rdate is not None:
-        avitem.rdate = rdate
-    avitem.length = length
-    if director is not None:
-        directorobj = session.query(Director).filter_by(name=director).first()
-        if directorobj is None:
-            directorobj = Director()
-            directorobj.name = director
-        avitem.director = directorobj
-
-    if studio is not None:
-        studioobj = session.query(Studio).filter_by(name=studio).first()
-        if studioobj is None:
-            studioobj = Studio()
-            studioobj.name = studio
-        avitem.studio = studioobj
-
-    if label is not None:
-        labelobj = session.query(Label).filter_by(name=label).first()
-        if labelobj is None:
-            labelobj = Label()
-            labelobj.name = label
-        avitem.label = labelobj
-    if series is not None:
-        seriesobj = session.query(Series).filter_by(name=series).first()
-        if seriesobj is None:
-            seriesobj = Series()
-            seriesobj.name = series
-        avitem.series = seriesobj
-
-    avitem.piccount = piccount
-    avitem.piccode = piccode
-
-    if len(actslist) > 0:
-        actresses = session.query(Actress).filter(Actress.actname.in_(actslist)).all()
-        for actname in actslist:
-            found = False
-            for act in actresses:
-                if act.actname == actname:
-                    found = True
-                    break
-            if not found:
-                act = Actress()
-                act.actname = actname
-                actresses.append(act)
-                session.add(act)
-        avitem.actresses = actresses
-    if len(genrelist) > 0:
-        genres = session.query(Genre).filter(Genre.name.in_(genrelist)).all()
-        for genrename in genrelist:
-            found = False
-            for gr in genres:
-                if gr.name == genrename:
-                    found = True
-                    break
-            if not found:
-                gr = Genre()
-                gr.name = genrename
-                genres.append(gr)
-                session.add(gr)
-        avitem.genres = genres
-    session.commit()
+    DBHelper.save_movie(code=code,title=title, length=length,rdate=rdate,
+                        director=director, studio=studio,label=label, series=series,
+                        piccode=piccode, piccount=piccount,source=1,
+                        actslist=actslist, genrelist=genrelist)
 
 
 def spider_avmoo_newmovie(second, session, xmlpageindex=1):
-    link = "https://avmoo.cyou/cn/sitemap-movie-(index).xml"
+    link = f"https://{avmoourl}/ja/sitemap-movie-(index).xml"
 
     while True:
         print(f"avmoo 第{xmlpageindex}个movie xml")
@@ -210,19 +129,25 @@ def spider_avmoo_newmovie(second, session, xmlpageindex=1):
 
         bs = BeautifulSoup(html, "xml")
 
-        links = bs.find_all("loc")
-        if len(links) == 0:
+        dateupdated = datetime.now()
+        dateupdated -= timedelta(days=30)
+        urltags = bs.find_all("url")
+        if len(urltags) == 0:
             break
-        for i in range(0, len(links)):
-            linktag = links[i]
-            movielink = linktag.get_text()
+        for urltag in urltags:
+            lastmod = urltag.find('lastmod').contents[0]
+            lastmod = datetime.strptime(lastmod, "%Y-%m-%dT%H:%M:%SZ")
+            if lastmod<dateupdated:
+                continue
+            loc=urltag.find('loc').contents[0]
+            movielink = 'http:'+loc
             spider_avmoo_movie_page(movielink, session)
             sleep(second)
         xmlpageindex += 1
 
 
 def spider_avmoo_by_studio(second):
-    link = "https://avmoo.cyou/cn/sitemap-studio-(index).xml"
+    link = f"https://{avmoourl}/ja/sitemap-studio-(index).xml"
     index = 2
     while True:
         html = CrawlerHelper.get_requests(link.replace('(index)', str(index)))
@@ -265,42 +190,42 @@ def crawler_movielist_page(pageurl, second):
                 actpiccode = re.findall('/actjpgs/(.*?).jpg', acttext)[0]
                 if "print" in actpiccode:
                     actpiccode = None
-                birth = re.findall('<p>生日: (.*?)</p>', acttext)
+                birth = re.findall('<p>生年月日: (.*?)</p>', acttext)
                 if len(birth) > 0:
                     birth = birth[0]
                 else:
                     birth = None
-                height = re.findall('<p>身高: (.*?)cm</p>', acttext)
+                height = re.findall('<p>身長: (.*?)cm</p>', acttext)
                 if len(height) > 0:
                     height = height[0]
                 else:
                     height = None
-                cups = re.findall('<p>罩杯: (.*?)</p>', acttext)
+                cups = re.findall('<p>ブラのサイズ: (.*?)</p>', acttext)
                 if len(cups) > 0:
                     cups = cups[0]
                 else:
                     cups = None
-                bust = re.findall('<p>胸围: (.*?)cm</p>', acttext)
+                bust = re.findall('<p>バスト: (.*?)cm</p>', acttext)
                 if len(bust) > 0:
                     bust = bust[0]
                 else:
                     bust = None
-                waist = re.findall('<p>腰围: (.*?)cm</p>', acttext)
+                waist = re.findall('<p>ウエスト: (.*?)cm</p>', acttext)
                 if len(waist) > 0:
                     waist = waist[0]
                 else:
                     waist = None
-                hips = re.findall('<p>臀围: (.*?)cm</p>', acttext)
+                hips = re.findall('<p>ヒップ: (.*?)cm</p>', acttext)
                 if len(hips) > 0:
                     hips = hips[0]
                 else:
                     hips = None
-                birthplace = re.findall('<p>出生地: (.*?)</p>', acttext)
+                birthplace = re.findall('<p>出身地: (.*?)</p>', acttext)
                 if len(birthplace) > 0:
                     birthplace = birthplace[0]
                 else:
                     birthplace = None
-                hobby = re.findall('<p>爱好: (.*?)</p>', acttext)
+                hobby = re.findall('<p>趣味: (.*?)</p>', acttext)
                 if len(hobby) > 0:
                     hobby = hobby[0]
                 else:
@@ -318,10 +243,10 @@ def crawler_movielist_page(pageurl, second):
                 continue
             else:
                 # 爬！
-                spider_avmoo_movie_page(url, session)
+                spider_avmoo_movie_page('http:'+url, session)
                 sleep(second)
         # 本页爬完 到下一页
-        findnext = re.findall("下一页", html)
+        findnext = re.findall("次へ ", html)
         if len(findnext) > 0:
             pageindex = pageindex + 1
             sleep(second)
@@ -332,7 +257,7 @@ def crawler_movielist_page(pageurl, second):
 def search_by_keyword(keyword, second, session, issearchcode=False):
     pageindex = 1
     while 1 == 1:
-        url = f"https://avmoo.cyou/cn/search/{keyword}/page/{pageindex}"
+        url = f"https://{avmoourl}/ja/search/{keyword}/page/{pageindex}"
         print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 爬取{url}")
         html = CrawlerHelper.get_requests(url).text
         bs = BeautifulSoup(html, "html.parser")
@@ -347,10 +272,10 @@ def search_by_keyword(keyword, second, session, issearchcode=False):
             # 爬！
             if issearchcode and code != keyword:
                 continue
-            spider_avmoo_movie_page(url, session)
+            spider_avmoo_movie_page('http:'+url, session)
             sleep(second)
         # 本页爬完 到下一页
-        findnext = re.findall("下一页", html)
+        findnext = re.findall("次へ ", html)
         if len(findnext) > 0:
             pageindex += 1
             sleep(second)
@@ -364,4 +289,15 @@ if __name__ == '__main__':
     DBsession = sessionmaker(bind=engine)
     session = DBsession()
 
-    spider_avmoo_newmovie(0.1, session)
+    spider_avmoo_newmovie(freq, session)
+
+
+# 图片
+#
+# 大图https://jp.netcdn.space/digital/video/ipx00590/ipx00590pl.jpg
+# https://pics.dmm.co.jp/digital/video/ssni00973/ssni00973pl.jpg
+# 小图https://jp.netcdn.space/digital/video/ipx00590/ipx00590jp-4.jpg
+# https://pics.dmm.co.jp/digital/video/ssni00975/ssni00975jp-6.jpg
+# 头像
+# https://pics.dmm.co.jp/mono/actjpgs/otosiro_sayaka.jpg
+# https://avmoo.casa/cn/movie/fc7850d1cbf6f50a

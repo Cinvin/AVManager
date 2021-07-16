@@ -51,12 +51,23 @@ ga('send', 'pageview');
                 </div>
             </form>
             <ul class="nav navbar-nav">
-                <li {% if pagetype == "movielist" and filtertype != "released" and filtertype != "favorite" and filtertype != "random" %} class="active" {% endif %}><a href="{{ url_for('movielist') }}">全部</a></li>
-                <li {% if filtertype == "released" %} class="active" {% endif %}><a href="{{ url_for('movielist',filtertype='released') }}">已发布</a></li>
-                <li {% if filtertype == "random" %} class="active" {% endif %}><a href="{{ url_for('movielist',filtertype='random') }}">随机</a></li>
-                <li {% if filtertype == "favorite" %} class="active" {% endif %}><a href="{{ url_for('movielist',filtertype='favorite') }}">收藏</a></li>
-                <li {% if pagetype == "actresslist" %} class="active" {% endif %}><a href="{{ url_for('actresslist') }}">女优</a></li>
-                <li {% if pagetype == "genrelist" %} class="active" {% endif %}><a href="{{ url_for('genrelist') }}">类别</a></li>
+                <li {% if pagination_endpoint == "movielist" and pagination_vals["filtertype"] != "released" and pagination_vals["filtertype"] != "random" %} class="active" {% endif %}><a href="{{ url_for('movielist') }}">全部</a></li>
+                <li {% if pagination_endpoint == "movielist" and pagination_vals["filtertype"] == "released" %} class="active" {% endif %}><a href="{{ url_for('movielist',filtertype='released') }}">已发布</a></li>
+                <li {% if pagination_endpoint == "movielist" and pagination_vals["filtertype"] == "random" %} class="active" {% endif %}><a href="{{ url_for('movielist',filtertype='random') }}">随机</a></li>
+                <li class='dropdown {% if pagination_endpoint == "favorites" %} active {% endif %}'>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true"><span class="glyphicon glyphicon-heart" style="font-size:12px;"></span> <span class="hidden-sm">收藏</span> <span class="caret"></span></a>
+                  <ul class="dropdown-menu" role="menu">
+                        <li><a href="{{ url_for('favorites',ftype='all') }}">全部</a></li>
+                        <li><a href="{{ url_for('favorites',ftype='actress') }}">女优</a></li>
+                        <li><a href="{{ url_for('favorites',ftype='movie') }}">影片</a></li>
+                        <li><a href="{{ url_for('favorites',ftype='studio') }}">制作商</a></li>
+                        <li><a href="{{ url_for('favorites',ftype='label') }}">发行商</a></li>
+                        <li><a href="{{ url_for('favorites',ftype='series') }}">系列</a></li>
+                  </ul>
+                </li>
+                <li {% if pagination_endpoint == "actresslist" %} class="active" {% endif %}><a href="{{ url_for('actresslist') }}">女优</a></li>
+                <li {% if pagination_endpoint == "genrelist" %} class="active" {% endif %}><a href="{{ url_for('genrelist') }}">类别</a></li>
+                <li {% if pagination_endpoint == "seriseslist" %} class="active" {% endif %}><a href="{{ url_for('seriseslist') }}">系列</a></li>
                 <li {% if pagetype == "predict" %} class="active" {% endif %}><a href="{{ url_for('predict') }}">识别</a></li>
                 <li {% if pagetype == "stats" %} class="active" {% endif %}><a href="{{ url_for('stats') }}">统计</a></li>
             </ul>
@@ -69,29 +80,26 @@ ga('send', 'pageview');
     </div>
     {% if pagination and pagination.has_prev %}
     <div class="col-xs-3 text-center">
-        <a id="prev" class="btn btn-default" href="{{ url_for(pagetype,page_index = pagination.prev_num,filtertype = filtertype,filterkey = filterkey) }}" style="display:none"><i class="glyphicon glyphicon-chevron-left"></i></a>
+        <a id="prev" class="btn btn-default" href="{{ url_for(pagination_endpoint,page_index = pagination.prev_num,**pagination_vals) }}" style="display:none"><i class="glyphicon glyphicon-chevron-left"></i></a>
     </div>
     {% endif %}
     {% if pagination and pagination.has_next %}
     <div class="col-xs-3 text-center">
-        <a id="next" class="btn btn-default" href="{{ url_for(pagetype,page_index = pagination.next_num,filtertype = filtertype,filterkey = filterkey) }}" style="display:none"><i class="glyphicon glyphicon-chevron-right"></i></a>
+        <a id="next" class="btn btn-default" href="{{ url_for(pagination_endpoint,page_index = pagination.next_num,**pagination_vals) }}" style="display:none"><i class="glyphicon glyphicon-chevron-right"></i></a>
     </div>
     {% endif %}
 </div>
 {% if pagetype == "movielist" %}
 {% include "movielist.html" %}
-{% include "pagination.html" %}
 {% endif %}
 {% if pagetype == "actress_movielist" %}
 {% include "movielist.html" %}
-{% include "pagination.html" %}
 {% endif %}
 {% if pagetype == "actresslist" %}
 {% include "actresslist.html" %}
-{% include "pagination.html" %}
 {% endif %}
-{% if pagetype == "genrelist" %}
-{% include "genrelist.html" %}
+{% if tagtype %}
+{% include "taglist.html" %}
 {% endif %}
 {% if pagetype == "movie" %}
 {% include "movie.html" %}
@@ -101,6 +109,9 @@ ga('send', 'pageview');
 {% endif %}
 {% if pagetype == "predict" %}
 {% include "predict.html" %}
+{% endif %}
+{% if pagination %}
+{% include "pagination.html" %}
 {% endif %}
 <footer class="footer hidden-xs">
     <div class="container-fluid">
@@ -126,12 +137,13 @@ ga('send', 'pageview');
                     </div>
                 </form>
             </li>
-            <li {% if pagetype == "movielist" and filtertype != "released" and filtertype != "favorite" and filtertype != "random" %} class="active" {% endif %}><a href="{{ url_for('movielist') }}">全部</a></li>
-            <li {% if filtertype == "released" %} class="active" {% endif %}><a href="{{ url_for('movielist',filtertype='released') }}">已发布</a></li>
-            <li {% if filtertype == "random" %} class="active" {% endif %}><a href="{{ url_for('movielist',filtertype='random') }}">随机</a></li>
-            <li {% if filtertype == "favorite" %} class="active" {% endif %}><a href="{{ url_for('movielist',filtertype='favorite') }}">收藏</a></li>
-            <li {% if pagetype == "actresslist" %} class="active" {% endif %}><a href="{{ url_for('actresslist') }}">女优</a></li>
-            <li {% if pagetype == "genrelist" %} class="active" {% endif %}><a href="{{ url_for('genrelist') }}">类别</a></li>
+            <li {% if pagination_endpoint == "movielist" and pagination_vals["filtertype"]  != "released" and pagination_vals["filtertype"]  != "random" %} class="active" {% endif %}><a href="{{ url_for('movielist') }}">全部</a></li>
+            <li {% if pagination_endpoint == "movielist" and pagination_vals["filtertype"]  == "released" %} class="active" {% endif %}><a href="{{ url_for('movielist',filtertype='released') }}">已发布</a></li>
+            <li {% if pagination_endpoint == "movielist" and pagination_vals["filtertype"]  == "random" %} class="active" {% endif %}><a href="{{ url_for('movielist',filtertype='random') }}">随机</a></li>
+            <li {% if pagination_endpoint == "favorites" %} class="active" {% endif %}><a href="{{ url_for('favorites',ftype='all') }}">收藏</a></li>
+            <li {% if pagination_endpoint == "actresslist" %} class="active" {% endif %}><a href="{{ url_for('actresslist') }}">女优</a></li>
+            <li {% if pagination_endpoint == "genrelist" %} class="active" {% endif %}><a href="{{ url_for('genrelist') }}">类别</a></li>
+            <li {% if pagination_endpoint == "seriseslist" %} class="active" {% endif %}><a href="{{ url_for('seriseslist') }}">系列</a></li>
             <li {% if pagetype == "predict" %} class="active" {% endif %}><a href="{{ url_for('predict') }}">识别</a></li>
             <li {% if pagetype == "stats" %} class="active" {% endif %}><a href="{{ url_for('stats') }}">统计</a></li>
 

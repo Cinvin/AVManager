@@ -2,13 +2,13 @@ import os
 from datetime import datetime
 
 import face_recognition
-from sklearn import svm
+from sklearn import svm,neural_network
 import joblib
 
 from collections import Counter
 
 
-def learn_imagedata():
+def learn_imagedata_svm():
     data_X = []
     data_y = []
     basepath = os.path.abspath(".") + '/traindata/'
@@ -23,6 +23,22 @@ def learn_imagedata():
     clf.fit(data_X, data_y)
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] end fit")
     joblib.dump(clf, basepath + 'predict3094.clf', compress=True)
+
+def learn_imagedata_nn():
+    data_X = []
+    data_y = []
+    basepath = os.path.abspath(".") + '/traindata/'
+    if os.path.exists(basepath + 'data_X6800.bin'):
+        data_X = joblib.load(basepath + 'data_X6800.bin')
+
+    if os.path.exists(basepath + 'data_y6800.bin'):
+        data_y = joblib.load(basepath + 'data_y6800.bin')
+
+    clf = neural_network.MLPClassifier(hidden_layer_sizes=(128, ))
+    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] start fit")
+    clf.fit(data_X, data_y)
+    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] end fit")
+    joblib.dump(clf, basepath + 'predict_nn.clf', compress=True)
 
 
 def cutdata():
@@ -75,6 +91,6 @@ def cutdata():
     joblib.dump(data_y, basepath + 'data_y' + str(actcount) + '.bin', compress=True)
 
 if __name__ == '__main__':
-    learn_imagedata()
+    learn_imagedata_nn()
     # cutdata()
 

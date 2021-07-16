@@ -45,10 +45,9 @@
             {% endif %}
             {% for movie in pagination.items %}
             <div class="item">
-                <a class="movie-box" href="{{ url_for('movie',cid = movie.piccode) }}">
+                <a class="movie-box" href="{{ url_for('movie',id = movie.id) }}">
                     <div class="photo-frame">
-                        <img src="https://jp.netcdn.space/digital/video/{{ movie.piccode }}/{{ movie.piccode }}ps.jpg"
-                             title="{{movie.title}}">
+                        <img src="{{pslist[movie.id]}}" title="{{movie.title}}">
                     </div>
                     <div class="photo-info">
                         <span>{{movie.title}}<br><date>{{ movie.code }}</date> / {% if movie.rdate %}<date>{{ movie.rdate.strftime("%Y-%m-%d") }}</date>{% endif %}</span>
