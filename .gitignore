@@ -4,3 +4,10 @@ face/traindata/data_y.bin
 face/traindata/predict.clf
 .DS_Store
 */.DS_Store
+face/traindata/data_X3094.bin
+face/traindata/data_X6800.bin
+face/traindata/data_y3094.bin
+face/traindata/data_y6800.bin
+face/traindata/predict3094.clf
+face/traindata/predict_nn.clf
+sqlhelper.py
