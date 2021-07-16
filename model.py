@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import and_
 
-sqlconnstr = "mysql+pymysql://root:hsh2273653@localhost/avbook"
+sqlconnstr = "mysql+pymysql://root:123456@localhost/avbook"
 
 app = Flask(__name__)
 app.debug=True
