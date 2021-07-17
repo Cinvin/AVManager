@@ -1,4 +1,3 @@
-import requests
 from flask import request
 from flask import render_template, redirect, url_for, jsonify
 from sqlalchemy import func, exists, and_, or_
@@ -24,16 +23,13 @@ def movielist(filtertype=None, filterkey=None, page_index=1):
             .order_by(AV.rdate.desc(), AV.code).paginate(page_index, per_page=30, error_out=False)
     elif filtertype == "search":
         filterkey = filterkey.strip()
-        resultquery = AV.query.with_entities(AV.id, AV.code, AV.title, AV.rdate, AV.piccode, AV.studio_id, AV.source).filter(1 == 2)
         # 搜女优名字
         acts = Actress.query.filter_by(actname=filterkey).all()
         if len(acts) == 1:
             return redirect(url_for('movielist', filtertype='actress', filterkey=acts[0].id))
-        acts = Actress.query.filter(Actress.actname.like(f"%{filterkey}%")).all()
-        for act in acts:
-            actquery = act.avs.with_entities(AV.id, AV.code, AV.title, AV.rdate, AV.piccode, AV.studio_id, AV.source)
-            resultquery = resultquery.union(actquery)
 
+        resultquery = AV.query.with_entities(AV.id, AV.code, AV.title, AV.rdate, AV.piccode, AV.studio_id, AV.source).filter(1 == 2)
+        
         # 搜番号
         codequery = AV.query.with_entities(AV.id, AV.code, AV.title, AV.rdate, AV.piccode, AV.studio_id, AV.source).filter_by(code=filterkey)
         codecount = codequery.count()

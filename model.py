@@ -1,8 +1,9 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import and_
+from sqlhelper import host, port ,user ,password ,dbname
 
-sqlconnstr = "mysql+pymysql://root:123456@localhost/avbook"
+sqlconnstr = f"mysql+pymysql://{user}:{password}@{host}/{dbname}"
 
 app = Flask(__name__)
 app.debug=True
