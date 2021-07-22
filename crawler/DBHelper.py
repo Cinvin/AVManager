@@ -18,17 +18,19 @@ def check_movie_exist_with_title(code,title):
     avitem = session.query(AV).filter(AV.code == code and AV.title.like(f"%{title}%")).first()
     return avitem
 
-def get_movie_obj(code,studio)->AV:
+def get_movie_obj(code,studio):
     studio_id = session.query(Studio).filter_by(name=studio).first()
     if studio_id:
         studio_id = studio_id.id
+    else:
+        return None
     avitem = session.query(AV).filter_by(code=code, studio_id=studio_id).first()
     return avitem
 
 def save_movie(code, title, length, rdate=None, director=None, studio=None, label=None, series=None,
                piccode=None, piccount=None, source:int=1,
                actslist: list = [], genrelist: list = []):
-    avitem = get_movie_obj(studio,code)
+    avitem = get_movie_obj(code,studio)
     if avitem is None:
         avitem = AV()
         session.add(avitem)
@@ -114,20 +116,8 @@ def save_mgscode(studio,mgscode):
         session.commit()
 
 def change_to_mgs_pic(piccode,studio):
-    avitem = get_movie_obj(studio, piccode.lstrip(string.digits))
+    avitem = get_movie_obj(piccode.lstrip(string.digits), studio)
     if avitem:
         avitem.source=2
         avitem.piccode=piccode
         session.commit()
-
-def get_video_obj_by_code(code:str):
-    vitem = session.query(Video).filter(Video.code == code).first()
-    return vitem
-def save_videourl(code,url):
-    vd=get_video_obj_by_code(code)
-    if vd is None:
-        vd=Video()
-        vd.code=code
-        session.add(vd)
-    vd.url=url
-    session.commit()

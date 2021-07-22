@@ -117,5 +117,6 @@ def get_requests(url, is_stream=False, cookies=None):
             print(f"get_requests Exception {ex}")
             print(url)
             retry_count += 1
+            sleep(retry_count * 2)
             if retry_count == 6:
                 raise ex
