@@ -29,7 +29,7 @@ def movielist(filtertype=None, filterkey=None, page_index=1):
             return redirect(url_for('movielist', filtertype='actress', filterkey=acts[0].id))
 
         resultquery = AV.query.with_entities(AV.id, AV.code, AV.title, AV.rdate, AV.piccode, AV.studio_id, AV.source).filter(1 == 2)
-        
+
         # 搜番号
         codequery = AV.query.with_entities(AV.id, AV.code, AV.title, AV.rdate, AV.piccode, AV.studio_id, AV.source).filter_by(code=filterkey)
         codecount = codequery.count()

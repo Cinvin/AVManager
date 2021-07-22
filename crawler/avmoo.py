@@ -12,7 +12,7 @@ from sqlalchemy import create_engine, exists
 from sqlalchemy.orm import sessionmaker
 
 # setting
-freq = 0.4 # second
+freq = 1 # second
 avmoourl = 'avmoo.casa'
 
 def spider_avmoo_movie_page(url, session):
@@ -140,11 +140,11 @@ def spider_avmoo_newmovie(second, session, xmlpageindex=1):
             if lastmod<dateupdated:
                 continue
             loc=urltag.find('loc').contents[0]
-            movielink = 'http:'+loc
+            movielink = 'https:'+loc
             spider_avmoo_movie_page(movielink, session)
-            sleep(second)
+            sleep(freq)
         xmlpageindex += 1
-
+        sleep(freq)
 
 def spider_avmoo_by_studio(second):
     link = f"https://{avmoourl}/ja/sitemap-studio-(index).xml"
@@ -243,7 +243,7 @@ def crawler_movielist_page(pageurl, second):
                 continue
             else:
                 # 爬！
-                spider_avmoo_movie_page('http:'+url, session)
+                spider_avmoo_movie_page('https:'+url, session)
                 sleep(second)
         # 本页爬完 到下一页
         findnext = re.findall("次へ ", html)
@@ -272,7 +272,7 @@ def search_by_keyword(keyword, second, session, issearchcode=False):
             # 爬！
             if issearchcode and code != keyword:
                 continue
-            spider_avmoo_movie_page('http:'+url, session)
+            spider_avmoo_movie_page('https:'+url, session)
             sleep(second)
         # 本页爬完 到下一页
         findnext = re.findall("次へ ", html)
