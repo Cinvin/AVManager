@@ -124,8 +124,8 @@
             <h4>链接</h4>
             <div>
                 <p>
-                    <span class="genre"><a href="https://btsow.shop/search/{{ movie.code }}/">磁力搜索</a></span>
-                    <span class="genre"><a href="https://avmoo.cyou/cn/search/{{ movie.code }}/">avmoo</a></span>
+                    <span class="genre"><a href="https://btsow.one/search/{{ movie.code }}/">磁力搜索</a></span>
+                    <span class="genre"><a href="https://avmoo.casa/cn/search/{{ movie.code }}/">avmoo</a></span>
                     <span class="genre"><a href="https://www.busfan.blog/search/{{ movie.code }}&type=&parent=ce">javbus</a></span>
                 </p>
             </div>
@@ -133,3 +133,18 @@
     </div>
 
 <script src="{{url_for('static',filename='js/jquery.js')}}"></script>
+<script>
+    function favorite(domid,ftype,fid){
+        var classname = $("#"+domid).attr("class");
+        var val = classname == "glyphicon glyphicon-heart-empty"
+
+        $.post("{{url_for('favorite')}}", { 'ftype' : ftype, 'fid' : fid ,'val' : val} );
+
+        $("#"+domid).removeClass("glyphicon-heart glyphicon-heart-empty");
+        if(classname == "glyphicon glyphicon-heart-empty" ){
+            $("#"+domid).addClass("glyphicon glyphicon-heart");
+        }else{
+            $("#"+domid).addClass("glyphicon glyphicon-heart-empty");
+        }
+    }
+</script>
