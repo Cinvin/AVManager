@@ -5,67 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="acee35b2-40be-4bdf-9524-887c152ee720" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/crawler/Tools.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/daily_crawler.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/other/av_wiki.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/other/avsox.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/other/javbus.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/other/javlibrary.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/other/sougouwiki.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/shop/R18.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/shop/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/shop/ave.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/shop/fanza_actinfo.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/shop/fanza_amateur.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/shop/fanza_digital.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/shop/fanza_dvd.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/shop/fanza_rental.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/shop/fc2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/studio/_10musume.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/studio/_1pondo.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/studio/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/studio/aurora-pro.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/studio/caribbeancom.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/studio/heyzo.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/studio/km_produce.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/studio/madonna.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/studio/moodyz.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/studio/pacopacomama.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/studio/prestige.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler/studio/tokyo_hot.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/airplay.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/mediaelementplayer.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/mejs-controls.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/airplay.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/bootstrap-hover-dropdown.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/chromecast.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/mediaelement-and-player.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/AVManager.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AVManager.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crawler/DBHelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/DBHelper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crawler/MGStage.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/shop/MGStage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crawler/avmoo.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/other/avmoo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crawler/fanza.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/crawler/genrename.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/other/genrename.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crawler/minnano.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/other/minnano.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/get_face_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/face/get_face_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pictures.py" beforeDir="false" afterPath="$PROJECT_DIR$/pictures.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/promo.py" beforeDir="false" afterPath="$PROJECT_DIR$/promo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlhelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/sqlhelper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/app.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/app.min.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stats.py" beforeDir="false" afterPath="$PROJECT_DIR$/stats.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/movie.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/movie.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/movielist.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/movielist.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pagination.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pagination.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/predict.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/predict.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/studio/aurora-pro.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
