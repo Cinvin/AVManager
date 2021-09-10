@@ -13,7 +13,7 @@
                         {% endif %}
                     </div>
                     <div class="photo-info">
-                        <span class="pb-10">{{ actress.actname }}</span>
+                        <span class="pb-10">{{ actress.actname }}<small><font color="#888">{{ actress.subnames() }}</font></small></span>
                         {% if actress.birthday %}
                         <p>生日: {{ actress.birthday.strftime("%Y-%m-%d") }}</p>
                         <p>年龄: {{ actress.age }}</p>

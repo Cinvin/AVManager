@@ -6,10 +6,12 @@ user = 'root'
 password = '123456'
 dbname = 'avbook'
 
+def get_db():
+    return pymysql.connect(host=host, port=port, user=user,
+                         password=password, db=dbname)
 
 def select(sql):
-    db = pymysql.connect(host=host, port=port, user=user,
-                         password=password, db=dbname)
+    db = get_db()
     cursor = db.cursor(pymysql.cursors.DictCursor)
     cursor.execute(sql)
     result = cursor.fetchall()
@@ -19,8 +21,7 @@ def select(sql):
 
 
 def selectone(sql):
-    db = pymysql.connect(host=host, port=port, user=user,
-                         password=password, db=dbname)
+    db = get_db()
     cursor = db.cursor(pymysql.cursors.DictCursor)
     cursor.execute(sql)
     result = cursor.fetchone()
@@ -30,8 +31,7 @@ def selectone(sql):
 
 
 def fetchone(sql, *args):
-    db = pymysql.connect(host=host, port=port, user=user,
-                         password=password, db=dbname)
+    db = get_db()
     cursor = db.cursor(pymysql.cursors.DictCursor)
     cursor.execute(sql, args=args)
     result = cursor.fetchone()
@@ -41,8 +41,7 @@ def fetchone(sql, *args):
 
 
 def fetchall(sql, *args):
-    db = pymysql.connect(host=host, port=port, user=user,
-                         password=password, db=dbname)
+    db = get_db()
     cursor = db.cursor(pymysql.cursors.DictCursor)
     cursor.execute(sql, args=args)
     result = cursor.fetchall()
@@ -52,8 +51,7 @@ def fetchall(sql, *args):
 
 
 def execute(sql, *args):
-    db = pymysql.connect(host=host, port=port, user=user,
-                         password=password, db=dbname)
+    db = get_db()
     cursor = db.cursor(pymysql.cursors.DictCursor)
     cursor.execute(sql, args=args)
     db.commit()

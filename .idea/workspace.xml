@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="acee35b2-40be-4bdf-9524-887c152ee720" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/crawler/Tools.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/daily_crawler.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/other/av_wiki.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/other/avsox.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/other/javbus.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/other/javlibrary.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/other/sougouwiki.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/shop/R18.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/shop/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/shop/ave.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/shop/fanza_actinfo.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/shop/fanza_amateur.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/shop/fanza_digital.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/shop/fanza_dvd.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/shop/fanza_rental.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/shop/fc2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/studio/_10musume.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/studio/_1pondo.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/studio/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/studio/aurora-pro.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/studio/caribbeancom.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/studio/heyzo.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/studio/km_produce.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/studio/madonna.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/studio/moodyz.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/studio/pacopacomama.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/studio/prestige.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/studio/tokyo_hot.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/airplay.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/mediaelementplayer.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/mejs-controls.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/airplay.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/bootstrap-hover-dropdown.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/chromecast.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/mediaelement-and-player.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/AVManager.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AVManager.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/DBHelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/DBHelper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/MGStage.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/shop/MGStage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/avmoo.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/other/avmoo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/fanza.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/genrename.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/other/genrename.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/minnano.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/other/minnano.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/get_face_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/face/get_face_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pictures.py" beforeDir="false" afterPath="$PROJECT_DIR$/pictures.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/promo.py" beforeDir="false" afterPath="$PROJECT_DIR$/promo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sqlhelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/sqlhelper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/css/app.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/app.min.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stats.py" beforeDir="false" afterPath="$PROJECT_DIR$/stats.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/movie.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/movie.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/movielist.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/movielist.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pagination.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pagination.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/predict.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/predict.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="ProjectId" id="1viC2p2DirulV9Avyl2S9tQoh3e" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/static/js" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.editor" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/static/js" />
+      <recent name="$PROJECT_DIR$/crawler/other" />
+      <recent name="$PROJECT_DIR$/crawler/studio" />
+      <recent name="$PROJECT_DIR$/crawler/shop" />
+      <recent name="$PROJECT_DIR$/static" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/crawler/other" />
+      <recent name="$PROJECT_DIR$/crawler/shop" />
+      <recent name="$PROJECT_DIR$/crawler/studio" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.MGStage">
+    <configuration name="MGStage" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AVManager" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/crawler/shop" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crawler/shop/MGStage.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="R18" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AVManager" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/crawler/shop" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crawler/shop/R18.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="daily_crawler" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AVManager" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/crawler" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crawler/daily_crawler.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="fanza_amateur" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AVManager" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/crawler/shop" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crawler/shop/fanza_amateur.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="fanza_digital" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AVManager" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/crawler/shop" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crawler/shop/fanza_digital.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.MGStage" />
+        <item itemvalue="Python.fanza_digital" />
+        <item itemvalue="Python.fanza_amateur" />
+        <item itemvalue="Python.R18" />
+        <item itemvalue="Python.daily_crawler" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="acee35b2-40be-4bdf-9524-887c152ee720" name="Default Changelist" comment="" />
+      <created>1627035317212</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1627035317212</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+</project>

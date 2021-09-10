@@ -16,19 +16,56 @@ def geteecharts():
 def get_av_year_charts():
     movie_count=AV.query.count()
     years = func.date_format(AV.rdate, "%Y").label('year')
-    result = AV.query.with_entities(years, func.count('*').label('year_count')) \
+    result1 = AV.query.with_entities(years, func.count('*').label('year_count')) \
         .filter(AV.rdate.isnot(None)) \
         .order_by(years) \
         .group_by(years).all()
-    a1, a2 = zip(*result)
+    x_year, y_all = zip(*result1)
+
+    result2 = AV.query.with_entities(years, func.count('*').label('year_count')) \
+        .filter(and_(AV.rdate.isnot(None),AV.category==1)) \
+        .order_by(years) \
+        .group_by(years).all()
+    y_censored=[0 for i in range(len(y_all))]
+    for item in result2:
+        y_censored[x_year.index(item[0])]=item[1]
+
+    result3 = AV.query.with_entities(years, func.count('*').label('year_count')) \
+        .filter(and_(AV.rdate.isnot(None),AV.category==2)) \
+        .order_by(years) \
+        .group_by(years).all()
+    y_uncensored = [0 for i in range(len(y_all))]
+    for item in result3:
+        y_uncensored[x_year.index(item[0])] = item[1]
+
+    result4 = AV.query.with_entities(years, func.count('*').label('year_count')) \
+        .filter(and_(AV.rdate.isnot(None), AV.category == 3)) \
+        .order_by(years) \
+        .group_by(years).all()
+    y_fc2 = [0 for i in range(len(y_all))]
+    for item in result4:
+        y_fc2[x_year.index(item[0])] = item[1]
+
     line = (
         Line(init_opts=opts.InitOpts(
             # 设置宽度、高度
             width='1200px',
             height='500px', )
         )
-            .add_xaxis(list(a1))
-            .add_yaxis("数量", list(a2),
+            .add_xaxis(list(x_year))
+            .add_yaxis("所有", list(y_all),
+                       label_opts=opts.LabelOpts(is_show=False),
+                       is_smooth=True
+                       )
+            .add_yaxis("有码", list(y_censored),
+                       label_opts=opts.LabelOpts(is_show=False),
+                       is_smooth=True
+                       )
+            .add_yaxis("无码", list(y_uncensored),
+                       label_opts=opts.LabelOpts(is_show=False),
+                       is_smooth=True
+                       )
+            .add_yaxis("FC2", list(y_fc2),
                        label_opts=opts.LabelOpts(is_show=False),
                        is_smooth=True
                        )

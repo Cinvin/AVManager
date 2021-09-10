@@ -12,7 +12,7 @@
     </div>
 </div>
 <script>
-    function btnUploadFile(e){
+function btnUploadFile(e){
 $('#showIMG').attr("src",'{{ url_for("static",filename="img/loading.gif") }}')
 var imgFile = e.target.files[0]; //获取图片文件
 var formData = new FormData();  // 创建form对象

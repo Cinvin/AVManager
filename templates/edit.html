@@ -1,0 +1,116 @@
+<div class="container">
+	<div class="row">
+        <div class="span12">
+        <form class="form-horizontal" id="form1" role="form">
+            <input type="hidden" id="mid" name="id" value="{{movie.id}}">
+            <div class="form-group">
+                <label for="mcode" class="col-sm-1 control-label">DVD ID</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="mcode" name="code" placeholder="DVD ID" value="{%if movie.code%}{{movie.code}}{%endif%}">
+                </div>
+                <label for="mcid" class="col-sm-1 control-label">内容 ID</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="mcid" name="cid" placeholder="内容 ID" value="{%if movie.cid%}{{movie.cid}}{%endif%}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="mtitle" class="col-sm-1 control-label">标题</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="mtitle" name="title" placeholder="内容 ID" value="{%if movie.title%}{{movie.title}}{%endif%}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="mrdate" class="col-sm-1 control-label">日期</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="mrdate" name="rdate" placeholder="日期" value="{%if movie.rdate%}{{ movie.rdate.strftime('%Y-%m-%d') }}{%endif%}">
+                </div>
+                <label for="mlength" class="col-sm-1 control-label">时长</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="mlength" name="length" placeholder="时长" value="{%if movie.length%}{{ movie.length }}{%endif%}"  onkeyup="this.value=this.value.replace(/\D/g,'')">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="mdirector" class="col-sm-1 control-label">导演</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="mdirector" name="director" placeholder="导演" value="{%if movie.director%}{{movie.director.name}}{%endif%}">
+                </div>
+                <label for="mseries" class="col-sm-1 control-label">系列</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="mseries" name="series" placeholder="系列" value="{%if movie.series%}{{movie.series.name}}{%endif%}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="mstudio" class="col-sm-1 control-label">制作商</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="mstudio" name="studio" placeholder="制作商" value="{%if movie.studio%}{{ movie.studio.name }}{%endif%}">
+                </div>
+                <label for="mlabel" class="col-sm-1 control-label">发行商</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="mlabel" name="label" placeholder="发行商" value="{%if movie.label%}{{ movie.label.name }}{%endif%}">
+                </div>
+            </div>
+            <div class="form-group">
+              <label for="msource" class="col-sm-1 control-label">来源:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="msource" name="source" placeholder="图片源" value="{%if movie.source%}{{ movie.source }}{%endif%}">
+<!--                  <select class="form-control" id="msource" name="source">-->
+<!--                    <option value="1"{%if movie.source==1%} selected="selected"{%endif%}>dmm.digital</option>-->
+<!--                    <option value="2"{%if movie.source==2%} selected="selected"{%endif%}>mgstage</option>-->
+<!--                    <option value="3"{%if movie.source==3%} selected="selected"{%endif%}>dmm.dvd</option>-->
+<!--                    <option value="4"{%if movie.source==4%} selected="selected"{%endif%}>dmm.amateur</option>-->
+<!--                  </select>-->
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="mpiccode" class="col-sm-1 control-label">图片代号</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="mpiccode" name="piccode" placeholder="图片代号" value="{%if movie.piccode%}{{movie.piccode}}{%endif%}">
+                </div>
+                <label for="mpiccount" class="col-sm-1 control-label">缩略图数量</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="mpiccount" name="piccount" placeholder="缩略图数量" value="{%if movie.piccount%}{{movie.piccount}}{%endif%}" onkeyup="this.value=this.value.replace(/\D/g,'')">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="mactress" class="col-sm-1 control-label">女优(,分隔)</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="mactress" name="actress" placeholder="女优" value="{% for actress in movie.actresses %}{{ actress.actname }},{% endfor %}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="mactress" class="col-sm-1 control-label">男优(,\分隔)</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="mhistrion" name="histrion" placeholder="男优" value="{% for histrion in movie.histrions %}{{ histrion.actname }},{% endfor %}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="mgenre" class="col-sm-1 control-label">类别(输入日语 ,分隔)</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="mgenre" name="genre" placeholder="类别" value="{% for genre in movie.genres %}{{ genre.name_ja }},{% endfor %}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-1 col-sm-10">
+                  <button type="button" onclick="save()" class="btn btn-default">保存</button>
+                </div>
+            </div>
+        </form>
+        </div>
+	</div>
+</div>
+<script type="text/javascript">
+function save() {
+$.ajax({
+type: "POST",//方法类型
+dataType: "json",//预期服务器返回的数据类型
+url: "{{ url_for('edit_save') }}" ,//url
+data: $('#form1').serialize(),
+success: function (result) {
+    window.location.replace("{{ url_for('movie',id=movie.id) }}");
+},
+error : function() {
+    alert("必填项不能为空");
+}
+});
+}
+</script>

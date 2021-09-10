@@ -1,12 +1,13 @@
 from bs4 import BeautifulSoup
 import re
-import CrawlerHelper
+from crawler import CrawlerHelper
 import minnano
 from datetime import datetime,timedelta
 from time import sleep
-import sys
 from crawler import DBHelper
-sys.path.append("..")
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/' + '..'))
 from model import *
 from sqlalchemy import create_engine, exists
 from sqlalchemy.orm import sessionmaker
@@ -110,10 +111,10 @@ def spider_avmoo_movie_page(url, session):
             genrelist.append(genre)
 
     # 保存
-    DBHelper.save_movie(code=code,title=title, length=length,rdate=rdate,
+    DBHelper.save_movie(code=code,cid=piccode, category=1, title=title, length=length,rdate=rdate,
                         director=director, studio=studio,label=label, series=series,
                         piccode=piccode, piccount=piccount,source=1,
-                        actslist=actslist, genrelist=genrelist)
+                        actresslist=actslist, genrelist=genrelist)
 
 
 def spider_avmoo_newmovie(second, session, xmlpageindex=1):
@@ -288,8 +289,8 @@ if __name__ == '__main__':
     engine = create_engine(sqlconnstr)
     DBsession = sessionmaker(bind=engine)
     session = DBsession()
-
     spider_avmoo_newmovie(freq, session)
+
 
 
 # 图片

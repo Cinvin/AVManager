@@ -53,6 +53,7 @@ class GetActressImgData:
 
         for actcode in self.actcodelist:
             obj = executor.submit(self._get_itemactressdata, actcode)
+
             obj_list.append(obj)
 
         i = 0

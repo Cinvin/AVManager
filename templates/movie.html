@@ -1,29 +1,36 @@
 <!DOCTYPE html>
+
 <div class="container">
-        <h3>{{ movie.code }} {{ movie.title }}</h3>
+        <h3>{{ movie.title }}</h3>
         <div class="row movie">
             <div class="col-md-9 screencap">
-                <a class="bigImage" href="{{ pictures.poster_large }}" title="{{ movie.code }} {{ movie.title }}"><img src="{{ pictures.poster_large }}"></a>
+                <a class="bigImage" href="{{ pictures.poster_large }}" title="{{ movie.title }}"><img src="{{ pictures.poster_large }}"></a>
             </div>
             <div class="col-md-3 info">
-                <p><span class="header">识别码:</span> <span style="color:#CC0000;">{{ movie.code }}{{ movie.test }}</span>
+                <p><span class="header">DVD ID:</span> <span style="color:#CC0000;">{{ movie.code }}</span>
                     {% if movie.is_favorite() %}
                     <span class="glyphicon glyphicon-heart" id="btn_favorite_code" aria-hidden="true" onclick="favorite(this.id,1,{{ movie.id }})"></span>
                     {% else %}
                     <span class="glyphicon glyphicon-heart-empty" id="btn_favorite_code_empty" aria-hidden="true" onclick="favorite(this.id,1,{{ movie.id }})"></span>
                     {% endif %}
+                    <a type="button" class="btn btn-default btn-xs pull-right" href="{{ url_for('edit',id=movie.id) }}">修改</a>
                 </p>
+                {% if movie.cid and movie.cid != movie.code %}
+                <p><span class="header">内容 ID:</span> <span style="color:#CC0000;">{{ movie.cid }}</span></p>
+                {% endif %}
                 {% if movie.rdate %}
                 <p><span class="header">发行时间:</span> {{ movie.rdate.strftime("%Y-%m-%d") }}</p>
                 {% endif %}
+                {% if movie.length %}
                 <p><span class="header">长度:</span> {{ movie.length }}分钟</p>
+                {% endif %}
                 {% if movie.director %}
                 <p><span class="header">导演:</span>
                     <a href="{{ url_for('movielist',filtertype='director',filterkey=movie.director.id) }}">{{ movie.director.name }}</a>
                 </p>
                 {% endif %}
                 {% if movie.studio %}
-                <p class="header">制作商: </p>
+                <p class="header">{% if movie.studio.category!=3 %}制作商: {%else%}卖家: {%endif%}</p>
                 <p>
                     <a href="{{ url_for('movielist',filtertype='studio',filterkey=movie.studio.id) }}">{{ movie.studio.name }}</a>
                     {% if movie.studio.is_favorite() %}
@@ -56,7 +63,7 @@
                 </p>
                 {% endif %}
 
-                {% if movie.genres %}
+                {% if movie.genres.count()>0 %}
                 <p class="header">类别:</p>
                     <p>
                         {% for genre in movie.genres %}
@@ -69,7 +76,7 @@
             </div>
         </div>
 
-    {% if movie.actresses.count()>0 %}
+    {% if movie.actresses.count()>0 or movie.histrions.count()>0%}
     <h4>演员</h4>
         <div id="avatar-waterfall">
             {% for actress in movie.actresses %}
@@ -82,14 +89,20 @@
                     <img src="https://pics.dmm.co.jp/mono/actjpgs/nowprinting.gif" title="">
                     {% endif %}
                 </div>
-				<span>{{ actress.actname }}</span>
+                    <span>{{ actress.actname }} {% if actress.mainid %}<small><font color="#888">({{ actress.mainname() }})</font></small>{% endif %}</span>
                 </a>
                 {% if actress.is_favorite() %}
                 <span class="glyphicon glyphicon-heart" id="btn_favorite_actress_{{actress.id}}" aria-hidden="true" onclick="favorite(this.id,2,{{ actress.id }})"></span>
                 {% else %}
                 <span class="glyphicon glyphicon-heart-empty" id="btn_favorite_actress_empty_{{actress.id}}" aria-hidden="true" onclick="favorite(this.id,2,{{ actress.id }})"></span>
                 {% endif %}
-
+			</div>
+            {% endfor %}
+            {% for histrion in movie.histrions %}
+            <div class="avatar-box">
+                <a href="{{ url_for('movielist',filtertype='histrion',filterkey=histrion.id) }}">
+				<span>♂ {{ histrion.actname }}</span>
+                </a>
 			</div>
             {% endfor %}
         </div>
@@ -108,14 +121,33 @@
         </div>
     {% endif %}
 
-    {% if promo %}
+    {% if promo or movie.category==3 %}
     <div id="promo">
-        <h4>介绍影片</h4>
-        <video controls style="height: 100%; width: 100%; cursor: none;">
+        <h4>预告片</h4>
+        {%if promo %}
+        <video controls style="height: 100%; width: 100%; cursor: none;" id="player1">
             {% for item in promo %}
-            <source src="{{item}}" type="video/mp4">
+            <source src="{{item}}" {%if item.endswith('.m3u8')%}type="application/x-mpegurl"{%else%}type="video/mp4"{%endif%}>
             {% endfor %}
         </video>
+        <script>
+                            new MediaElementPlayer('player1', {
+                                autoRewind: false,
+                                castIsLive: true,
+                                hls: {
+                                    autoStartLoad: true
+                                },
+                                features: ['playpause', 'current', 'progress', 'duration', 'speed', 'volume', 'chromecast', 'airplay', 'fullscreen'],
+                                error: function () {
+                                    document.getElementById('player-1').style.display = "none";
+                                    document.getElementById('PlayerCover').style.display = "block";
+                                }
+                            }
+                            );
+        </script>
+        {% else %}
+         <iframe src="https://adult.contents.fc2.com/embed/{{movie.code.split('-')[2]}}/" style="height: 680px; width: 100%;"></iframe>
+        {% endif %}
     </div>
     {% endif %}
 
@@ -132,13 +164,12 @@
         </div>
     </div>
 
-<script src="{{url_for('static',filename='js/jquery.js')}}"></script>
 <script>
     function favorite(domid,ftype,fid){
         var classname = $("#"+domid).attr("class");
         var val = classname == "glyphicon glyphicon-heart-empty"
 
-        $.post("{{url_for('favorite')}}", { 'ftype' : ftype, 'fid' : fid ,'val' : val} );
+        $.post("{{url_for('favorite',code=movie.code)}}", { 'ftype' : ftype, 'fid' : fid ,'val' : val} );
 
         $("#"+domid).removeClass("glyphicon-heart glyphicon-heart-empty");
         if(classname == "glyphicon glyphicon-heart-empty" ){

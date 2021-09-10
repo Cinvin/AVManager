@@ -1,12 +1,13 @@
+import json
 import string
-
 from bs4 import BeautifulSoup
 import re
-import CrawlerHelper
+from crawler import CrawlerHelper
 from datetime import datetime
 from time import sleep
 import sys
 from crawler import DBHelper
+
 sys.path.append("..")
 import gzip
 
@@ -15,7 +16,7 @@ freq = 2 # second
 
 #sitemap: https://www.mgstage.com/product_detail_sitemap1.xml.gz
 
-def spider_by_sitemap(freq:int):
+def spider_by_sitemap(freq:int=freq):
     sitemapurl='https://www.mgstage.com/product_detail_sitemap{num}.xml.gz'
     for i in range(1,4):
         print(f'crawler sitemap page {str(i)}')
@@ -28,7 +29,8 @@ def spider_by_sitemap(freq:int):
         for link in links:
             url=link.get_text()
             piccode = re.findall('/product/product_detail/(.*?)/', url)[0]
-            if not DBHelper.check_dvdid_exist(piccode.lstrip(string.digits)):
+            code=getcode_by_piccode_mgstage(piccode)
+            if not DBHelper.check_dvdid_exist(code):
                 spider_moviePage(link.get_text())
                 sleep(freq)
 
@@ -38,16 +40,11 @@ def spider_by_maker(freq:int):
     data = gzip.decompress(data.content).decode('utf8')
     bs = BeautifulSoup(data, "xml")
     links = bs.find_all("loc")
+    links = links[314:]
     del data
     del bs
-    aaaa=True
     for link in links:
         link=link.get_text()
-        if 'Maybit' in link:
-            aaaa=False
-            continue
-        if aaaa:
-            continue
         urlbase = link+'&page={page}'
         pageindex=1
         while 1==1:
@@ -67,35 +64,52 @@ def spider_by_maker(freq:int):
                 if titletag is None:
                     continue
                 url = linktag["href"]
-                title=titletag.get_text().split(' ')[0]
-                print(title)
-                return
-                piccode = re.findall('/product/product_detail/(.*?)/',url)[0]
-                avitem=DBHelper.check_movie_exist_with_title(piccode.lstrip(string.digits), title)
-                if avitem is None:
+                title = titletag.get_text().split(' ')[0]
+                title = title_transfrom(title)
+                cid = re.findall('/product/product_detail/(.*?)/',url)[0]
+                code=getcode_by_piccode_mgstage(cid)
+                avitem=DBHelper.get_movie_by_cid(2,cid)
+                if avitem:
+                    continue
+                if not DBHelper.check_movie_exist_with_title_similar(code,title):
                     spider_moviePage('https://www.mgstage.com'+url)
-                    sleep(freq)
-                elif avitem.source == 1:
-                    #如果dmm图挂了换成mgs的
-                    dmmpicurl=f'http://pics.dmm.co.jp/digital/video/{avitem.piccode}/{avitem.piccode}ps.jpg'
-                    img = CrawlerHelper.get_requests(dmmpicurl, is_stream=True)
-                    if "printing" in img.url:
-                        DBHelper.change_to_mgs_pic(piccode, studio)
+                    #sleep(freq)
             if len(linktags)==0:
                 break
             pageindex=1+pageindex
             sleep(freq)
         sleep(freq)
 
+def spider_newrelease():
+    for pageindex in range(1, 30):# maxpage:84
+        listurl = f'https://www.mgstage.com/search/cSearch.php?search_word=&sort=new&list_cnt=120&type=top&page={pageindex}'
+        html = gethtml(listurl)
+        bs = BeautifulSoup(html, "html.parser")
+        linktags = bs.find_all('a', href=re.compile('/product/product_detail/'))
+        for linktag in linktags:
+            titletag = linktag.find('p')
+            if titletag is None:
+                continue
+            url = linktag["href"]
+            title = titletag.get_text().split(' ')[0]
+            title = title_transfrom(title)
+            cid = re.findall('/product/product_detail/(.*?)/', url)[0]
+            code = getcode_by_piccode_mgstage(cid)
+            avitem = DBHelper.get_movie_by_cid(2, cid)
+            if avitem:
+                continue
+            if not DBHelper.check_dvdid_exist(code):
+                spider_moviePage('https://www.mgstage.com' + url)
+                # sleep(freq)
+        if len(linktags) == 0:
+            break
+
 #https://www.mgstage.com/product/product_detail/022SGSR-079/
 def spider_moviePage(url):
-    html = CrawlerHelper.get_requests(url, cookies={'adc':'1'})
-    if html is None:
-        html = CrawlerHelper.get_requests(url, cookies={'adc':'1'})
-    if html is None:
+    response = CrawlerHelper.get_requests(url, cookies={'adc':'1'})
+    if response.url=='https://www.mgstage.com/':
         return
-    if html.status_code != 200:
-        raise Exception(f'{html.status_code} 请检查 {url}')
+
     html = gethtml(url)
     if len(html) == 0:
         print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 内容为空{url}")
@@ -109,6 +123,8 @@ def spider_moviePage(url):
     else:
         title = bs.find("title").get_text().strip()
         title = re.findall('「(.*)」',title)[0]
+
+    title=title_transfrom(title)
 
     # piccode=bs.find_all('img',class_='enlarge_image')[0]['src']
     # piccode=piccode.lstrip('https://image.mgstage.com/images/').rstrip('.jpg')
@@ -137,13 +153,16 @@ def spider_moviePage(url):
             continue
         tval=tval[0]
         if tkey == '品番：':
-            code=tval.get_text().strip().lstrip(string.digits)
+            code=tval.get_text().strip()
+            code = getcode_by_piccode_mgstage(code)
+
         elif tkey == '出演：':
             acttags = tval.find_all('a')
             for acttag in acttags:
                 actslist.append(acttag.get_text().strip())
         elif tkey == 'メーカー：':
             studio=tval.get_text().strip()
+            studio=studio_transfrom(studio)
         elif tkey == '収録時間：':
             length = tval.get_text().rstrip('min')
         elif tkey == '商品発売日：':
@@ -157,6 +176,7 @@ def spider_moviePage(url):
             if series=='': series=None
         elif tkey == 'レーベル：':
             label = tval.get_text().strip()
+            label = label_transfrom(label)
             if label=='': label=None
         elif tkey == 'ジャンル：':
             genretags=tval.find_all('a')
@@ -171,17 +191,39 @@ def spider_moviePage(url):
     pics=bs.find_all('img', src=re.compile('/cap_'))
     piccount=len(pics)
 
+    videocode=None
+    video=bs.find_all('a',href=re.compile('/sampleplayer/sampleplayer.html/(.*?)$'))
+    if len(video):
+        pid=re.findall('/sampleplayer/sampleplayer.html/(.*?)$',video[0]['href'])[0]
+        videores=gethtml(f'https://www.mgstage.com/sampleplayer/sampleRespons.php?pid={pid}')
+        resultobj = json.loads(videores)
+        videocode = re.findall(f'{piccode.replace("-","/").lower()}/(.*?)\.ism', resultobj["url"])
+        if len(videocode):
+            videocode=videocode[0]
+        else:
+            videocode=None
 
-
-    DBHelper.save_movie(code=code, title=title, length=length, rdate=rdate,
+    DBHelper.save_movie(code=code, cid=piccode, title=title, length=length, rdate=rdate,
                         director=director, studio=studio, label=label, series=series,
-                        piccode=piccode, piccount=piccount, source=2,
-                        actslist=actslist, genrelist=genrelist)
+                        piccode=videocode, piccount=piccount, source=2,
+                        actresslist=actslist, genrelist=genrelist)
 
     # https://image.mgstage.com/images/(.*?)/300maan/001/pb_e_300maan-001.jpg
     mgscode = re.findall(f'https://image.mgstage.com/images/(.*?)/{ piccode.lower().replace("-","/") }/', html)
     if len(mgscode)>0:
         DBHelper.save_mgscode(studio,mgscode[0])
+
+def getcode_by_piccode_mgstage(piccode):
+    if len(piccode)<3:
+        return piccode
+    is_makerstart=True
+    for i in range(0,3):
+        if piccode[i] not in string.digits:
+            is_makerstart=False
+            break
+    if is_makerstart:
+        return piccode[3:]
+    return piccode
 
 def gethtml(url):
     html = CrawlerHelper.get_requests(url, cookies={'adc': '1'})
@@ -194,6 +236,26 @@ def gethtml(url):
         raise Exception(f'{html.status_code} 请检查 {url}')
     return html.text
 
+def studio_transfrom(studio):
+    if studio=='Mellow Moon':
+        return 'Mellow Moon（メロウムーン）'
+    elif studio=='GOLDENCANDY':
+        return 'golden Candy'
+    return studio
+
+def label_transfrom(label):
+    return label
+
+def title_transfrom(title):
+    c1 = re.compile(f'【MGSだけのおまけ映像付き\+(\d*)分】')  # 【MGSだけのおまけ映像付き+20分】
+    title = c1.sub('', title)
+    title = title.replace('【期間限定販売】', '')
+    title = title.replace('【MGS独占配信BEST】', '')
+    title = title.replace('【初回限定版 特典映像付き】','')
+    title = title.strip()
+    return title
 
 if __name__ == '__main__':
-    spider_by_sitemap(freq=freq)
+    spider_newrelease()
+    #spider_by_sitemap(freq=freq)
+    #spider_by_maker(freq=freq)

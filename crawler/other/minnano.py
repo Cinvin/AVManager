@@ -2,7 +2,7 @@ from datetime import datetime
 import re
 import requests
 
-import CrawlerHelper
+from crawler import CrawlerHelper
 from bs4 import BeautifulSoup
 from model import *
 
