@@ -121,6 +121,36 @@
         </div>
     {% endif %}
 
+    {% if movie.magnets.count()>0 %}
+    <h4>磁链</h4>
+    <table id="magnet-table" class="table table-condensed table-striped table-hover" style="margin-bottom:0;">
+            <tbody><tr style="font-weight:bold;">
+              <td>名称<span class="glyphicon glyphicon-magnet"></span></td>
+              <td style="text-align:center;white-space:nowrap">大小</td>
+              <td style="text-align:center;white-space:nowrap">日期</td>
+            </tr>
+        </tbody>
+            {% for magnet in movie.magnets %}
+            <tr onmouseover="this.style.backgroundColor='#F4F9FD';this.style.cursor='pointer';" onmouseout="this.style.backgroundColor='#FFFFFF'" height="35px" style="border-top: 1px solid rgb(221, 221, 221); background-color: rgb(255, 255, 255); cursor: pointer;">
+                <td width="70%" onclick="window.open('magnet:?xt=urn:btih:{{magnet.hashinfo}}','_self')">
+                	<a style="color:#333" rel="nofollow" href="magnet:?xt=urn:btih:{{magnet.hashinfo}}">
+                        {{magnet.description}}
+                    </a>
+                </td>
+                <td style="text-align:center;white-space:nowrap" onclick="window.open('magnet:?xt=urn:btih:{{magnet.hashinfo}}','_self')">
+                	<a style="color:#333" rel="nofollow" href="magnet:?xt=urn:btih:{{magnet.hashinfo}}">
+                	{{magnet.size}}
+                    </a>
+                </td>
+                <td style="text-align:center;white-space:nowrap" onclick="window.open('magnet:?xt=urn:btih:{{magnet.hashinfo}}','_self')">
+                	<a style="color:#333" rel="nofollow" href="magnet:?xt=urn:btih:{{magnet.hashinfo}}">
+                	{{magnet.date.strftime("%Y-%m-%d")}}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
     {% if promo or movie.category==3 %}
     <div id="promo">
         <h4>预告片</h4>

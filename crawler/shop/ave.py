@@ -225,6 +225,10 @@ def spider_movielist_ppv(urlbase):
                 code=code.split('_',1)[1]
             if DBHelper.check_movie_exist_with_title_similar(code,title):
                 continue
+            if code.startswith('HEY-'):
+                continue
+            if len(re.findall('20\d\d\d\d\d',code)) > 0:
+                continue
             print(f'{code} {title} {link}')
             crawler_moviepage_ppv(link)
             sleep(freq)

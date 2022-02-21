@@ -14,6 +14,7 @@ import studio._1pondo as _1pondo
 import studio._10musume as _10musume
 import studio.caribbeancom as caribbeancom
 import studio.pacopacomama as pacopacomama
+import other.av_wiki as av_wiki
 
 # script for get new video information daily
 
@@ -40,6 +41,7 @@ try:
 except Exception as ex:
     print(ex)
 try:
+    fanza_digital.spider_reserve()
     fanza_digital.spider_newrelease()
 except Exception as ex:
     print(ex)
@@ -52,7 +54,13 @@ try:
 except Exception as ex:
     print(ex)
 try:
+    mgs.spider_reservation()
     mgs.spider_newrelease()
+except Exception as ex:
+    print(ex)
+#other
+try:
+    av_wiki.get_new()
 except Exception as ex:
     print(ex)
 #studio

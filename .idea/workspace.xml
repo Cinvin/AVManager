@@ -5,9 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="acee35b2-40be-4bdf-9524-887c152ee720" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/crawler/other/avdanyuwiki.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/other/javbook.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/other/seesaawiki.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crawler/shop/arzon.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crawler/studio/aurora-pro.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/DBHelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/DBHelper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/daily_crawler.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/daily_crawler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/other/av_wiki.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/other/av_wiki.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/other/javbus.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/other/javbus.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/other/sougouwiki.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/other/sougouwiki.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/shop/MGStage.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/shop/MGStage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/shop/R18.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/shop/R18.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/shop/ave.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/shop/ave.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/shop/fanza_actinfo.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/shop/fanza_actinfo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/shop/fanza_amateur.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/shop/fanza_amateur.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/shop/fanza_digital.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/shop/fanza_digital.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler/shop/fanza_dvd.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler/shop/fanza_dvd.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pictures.py" beforeDir="false" afterPath="$PROJECT_DIR$/pictures.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sqlhelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/sqlhelper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/movie.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/movie.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,13 +64,13 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/static/js" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/crawler/other" />
     <property name="settings.editor.selected.configurable" value="configurable.group.editor" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/static/js" />
       <recent name="$PROJECT_DIR$/crawler/other" />
+      <recent name="$PROJECT_DIR$/static/js" />
       <recent name="$PROJECT_DIR$/crawler/studio" />
       <recent name="$PROJECT_DIR$/crawler/shop" />
       <recent name="$PROJECT_DIR$/static" />
@@ -61,8 +81,8 @@
       <recent name="$PROJECT_DIR$/crawler/studio" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.MGStage">
-    <configuration name="MGStage" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.test">
+    <configuration name="av_wiki" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="AVManager" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -70,11 +90,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/crawler/shop" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/crawler/other" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crawler/shop/MGStage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crawler/other/av_wiki.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -83,7 +103,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="R18" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="avdanyuwiki" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="AVManager" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -91,11 +111,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/crawler/shop" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/crawler/other" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crawler/shop/R18.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crawler/other/avdanyuwiki.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -104,7 +124,49 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="daily_crawler" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AVManager" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="sougouwiki" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AVManager" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/crawler/other" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crawler/other/sougouwiki.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="AVManager" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -116,49 +178,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crawler/daily_crawler.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="fanza_amateur" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="AVManager" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/crawler/shop" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crawler/shop/fanza_amateur.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="fanza_digital" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="AVManager" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/crawler/shop" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crawler/shop/fanza_digital.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crawler/test.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -169,11 +189,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.MGStage" />
-        <item itemvalue="Python.fanza_digital" />
-        <item itemvalue="Python.fanza_amateur" />
-        <item itemvalue="Python.R18" />
-        <item itemvalue="Python.daily_crawler" />
+        <item itemvalue="Python.test" />
+        <item itemvalue="Python.av_wiki" />
+        <item itemvalue="Python.sougouwiki" />
+        <item itemvalue="Python.main" />
+        <item itemvalue="Python.avdanyuwiki" />
       </list>
     </recent_temporary>
   </component>

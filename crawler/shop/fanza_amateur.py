@@ -190,5 +190,5 @@ def spider_newrelease():
             if not avitem:
                 crawler_dmm_amateur_page(cid)
 if __name__ == '__main__':
-    #spider_by_sitemap()
-    spider_newrelease()
+    spider_by_sitemap()
+    #spider_newrelease()

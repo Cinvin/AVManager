@@ -117,6 +117,7 @@ def crawler_dmmdvd_page(cid):
                     piccodeav = DBHelper.check_piccode_exist(sample)
                     if piccodeav:
                         if piccodeav.source != 3:
+                            print(f'had existed {piccodeav.source} {piccodeav.cid} {piccodeav.piccode}')
                             return
                         if len(piccodeav.cid) > len(cid):
                             piccodeav.cid = cid

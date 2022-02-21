@@ -67,4 +67,5 @@ def spider_by_sitemap_R18_dvdid():
 
 
 if __name__ == '__main__':
-    spider_by_sitemap_R18_dvdid()
+    #spider_by_sitemap_R18_dvdid()
+    print(get_dvd_id_in_R18('td043dvaj00461'))

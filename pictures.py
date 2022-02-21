@@ -213,7 +213,6 @@ class Pictures:
             self.detail_small = []
             self.detail_large = []
 
-
 def get_pslist(avs:list):
     pslist={}
     for av in avs:

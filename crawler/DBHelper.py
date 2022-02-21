@@ -62,7 +62,7 @@ def check_movie_exist_with_title_similar(code,title):
         t2 = t2.lower()
         l2=len(t2)
         similar = SequenceMatcher(None, t1, t2).ratio()
-        if similar>=0.5*min(l1,l2)/max(l1,l2):
+        if similar>=0.2*min(l1,l2)/max(l1,l2):
             return True
     return False
 
@@ -235,6 +235,39 @@ def save_movie_actress(cid,source,actresslist):
             actresses.append(act)
             session.add(act)
     avitem.actresses = actresses
+    session.commit()
+
+def save_movie_histrion(cid,source,histrionlist):
+    avitem = get_movie_by_cid(source, cid)
+    if not avitem:
+        return
+    histrions = session.query(Histrion).filter(Histrion.actname.in_(histrionlist)).all()
+    for actname in histrionlist:
+        if len(actname) > 64:
+            continue
+        found = False
+        for act in histrions:
+            if act.actname == actname:
+                found = True
+                break
+        if not found:
+            act = Histrion()
+            act.actname = actname
+            histrions.append(act)
+            session.add(act)
+    avitem.histrions = histrions
+    session.commit()
+
+def save_magnet(av_id,hashinfo,description,size,date):
+    if session.query(Magnet).filter(Magnet.hashinfo==hashinfo).first():
+        return
+    magnet = Magnet()
+    magnet.description = description
+    magnet.hashinfo=hashinfo
+    magnet.size=size
+    magnet.date=date
+    magnet.av_id=av_id
+    session.add(magnet)
     session.commit()
 
 def save_mgscode(studio,mgscode):

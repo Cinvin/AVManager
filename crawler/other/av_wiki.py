@@ -4,9 +4,10 @@ import sqlhelper
 from crawler import CrawlerHelper, DBHelper, Tools
 from crawler.shop.fanza_amateur import crawler_dmm_amateur_page
 #https://av-wiki.net/mgstage/
+#https://av-wiki.net/mgstage-dvd/
 #https://av-wiki.net/fanza-shirouto/
-def pagelist(url):
-    pageindex=100
+def pagelist(url,maxpage=None):
+    pageindex=1
     while True:
         pageurl=url+f'/page/{pageindex}/'
         print(pageurl)
@@ -14,23 +15,22 @@ def pagelist(url):
         response.encoding='utf-8'
         html=response.text
         bs = BeautifulSoup(html, "html.parser")
-        articles=bs.find_all(name='article',class_='archive-list-wrap')
+        articles=bs.find_all(name='article',class_='archive-list')
         for article in articles:
             #href="https://www.mgstage.com/product/product_detail/200GANA-2490/?aff=QTWJYS6BP24YCHBPG2PDC83284"
             mgstage=article.find('a',href=re.compile('mgstage.com/product/product_detail/(.*?)/'))
             cid=None
             if mgstage:
                 cid=re.findall('mgstage.com/product/product_detail/(.*?)/',mgstage['href'])[0]
-            fanza_digital = article.find('img', src=re.compile('pics.dmm.co.jp/digital/video/(.*?)/'))
-            fanza_amateur = article.find('img',src=re.compile('pics.dmm.co.jp/digital/amateur/(.*?)/'))
+            fanza_digital = article.find('img', {'data-src':re.compile('pics.dmm.co.jp/digital/video/(.*?)/')})
+            fanza_amateur = article.find('img', {'data-src':re.compile('pics.dmm.co.jp/digital/amateur/(.*?)/')})
             if fanza_digital:
-                cid = re.findall('pics.dmm.co.jp/digital/video/(.*?)/', fanza_digital['src'])[0]
+                cid = re.findall('pics.dmm.co.jp/digital/video/(.*?)/', fanza_digital['data-src'])[0]
             if fanza_amateur:
-                print(fanza_amateur['src'])
-                cid = re.findall('pics.dmm.co.jp/digital/amateur/(.*?)/',fanza_amateur['src'])[0]
+                cid = re.findall('pics.dmm.co.jp/digital/amateur/(.*?)/',fanza_amateur['data-src'])[0]
 
             rdate = None
-            haishin_date=article.find('li',class_='haishin-date')
+            haishin_date=article.find('time')
             if haishin_date:
                 rdate=haishin_date.get_text().strip()
             else:
@@ -66,17 +66,23 @@ def pagelist(url):
                 source=2
             elif fanza_amateur:
                 source=4
-            print(cid)
-            print(rdate)
-            print(actresslist)
+            print(cid,rdate,source,actresslist)
             DBHelper.save_movie_actress(cid,source,actresslist)
+        if maxpage and maxpage == pageindex:
+            break
         if bs.find('a',href=re.compile(f'/page/{pageindex+1}')):
             pageindex+=1
         else:
             break
 
+def get_new():
+    pagelist('https://av-wiki.net/mgstage',maxpage=10)
+    pagelist('https://av-wiki.net/fanza-video',maxpage=30)
+    pagelist('https://av-wiki.net/fanza-shirouto',maxpage=10)
+
 if __name__ == '__main__':
-    #pagelist('https://av-wiki.net/mgstage')
-    pagelist('https://av-wiki.net/fanza-video')
-    #pagelist('https://av-wiki.net/fanza-shirouto')
+    #get_new()
+    #pagelist('https://av-wiki.net/mgstage', maxpage=100)
+    #pagelist('https://av-wiki.net/fanza-video', maxpage=200)
+    pagelist('https://av-wiki.net/fanza-shirouto', maxpage=30)
 

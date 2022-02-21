@@ -48,15 +48,14 @@ def update_actress_piccode():
                         codes = re.findall('https://pics.dmm.co.jp/mono/actjpgs/thumbnail/(.*?).jpg', str(img['src']))
                     id = re.findall('/id=(.*?)/', str(atag['href']))
                     if len(codes)>0:
-                        fechresult=sqlhelper.fetchone('select 1 from t_actress where actname=%s',name)
+                        fechresult=sqlhelper.fetchone('select 1 from t_actress where fanzaid=%s',id[0])
                         if fechresult:
+                            sqlhelper.execute("update t_actress set piccode=%s where fanzaid=%s",
+                                              codes[0],id[0])
+                        else:
                             sqlhelper.execute("update t_actress set piccode=%s,fanzaid=%s where actname=%s",
                                               codes[0],id[0], name)
-                            print(f"update {name} {codes[0]} {id[0]}")
-                        else:
-                            sqlhelper.execute("insert into t_actress (actname,piccode,fanzaid) values (%s,%s,%s)",
-                                              name, codes[0], id[0])
-                            print(f"insert {name} {codes[0]} {id[0]}")
+                        print(name, codes[0], id[0])
                 terminals=bs.find_all('li', class_="terminal")
                 nextflag=False
                 for terminal in terminals:
@@ -105,15 +104,4 @@ def get_dmmdvd_makerid():
 
 if __name__ == '__main__':
     #get_dmmdvd_makerid()
-    #update_actress_piccode()
-    sqlres1=sqlhelper.fetchall('SELECT MIN(ID) as minid,actname FROM t_actress GROUP BY actname HAVING count(actname)>1 ORDER BY actname')
-    print(len(sqlres1))
-    for item in sqlres1:
-        minid=item['minid']
-        actname=item['actname']
-        sqlres2 = sqlhelper.fetchall(
-            'SELECT id FROM t_actress where actname=%s and id !=%s',actname,minid)
-        for it in sqlres2:
-            actid=it['id']
-            #sqlhelper.execute('update t_av_actress set actress_id=%s where actress_id=%s and not exists(select 1 t_av_actress b where b.actress_id=%s and b.av_id=av_id)',minid,actid,minid)
-            sqlhelper.execute('delete from t_actress  where id=%s', actid)
+    update_actress_piccode()

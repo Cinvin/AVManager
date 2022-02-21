@@ -89,7 +89,13 @@ ga('send', 'pageview');
                         <li><a href="{{ url_for('favorites',ftype='series') }}">系列</a></li>
                   </ul>
                 </li>
-                <li {% if pagination_endpoint == "actresslist" %} class="active" {% endif %}><a href="{{ url_for('actresslist') }}">女优</a></li>
+                <li class='dropdown {% if pagination_endpoint == "actresslist" or pagination_endpoint == "histrionlist" %} class="active" {% endif %}'>
+                  <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" role="button" aria-expanded="true"> <span class="hidden-sm">演员</span> <span class="caret"></span></a>
+                  <ul class="dropdown-menu" role="menu">
+                        <li><a href="{{ url_for('actresslist') }}">女优♀</a></li>
+                        <li><a href="{{ url_for('histrionlist') }}">男优♂</a></li>
+                  </ul>
+                </li>
                 <li {% if pagination_endpoint == "genrelist" %} class="active" {% endif %}><a href="{{ url_for('genrelist') }}">类别</a></li>
                 <li {% if pagination_endpoint == "studiolist" %} class="active" {% endif %}><a href="{{ url_for('studiolist') }}">片商</a></li>
                 <li {% if pagination_endpoint == "seriseslist" %} class="active" {% endif %}><a href="{{ url_for('seriseslist') }}">系列</a></li>

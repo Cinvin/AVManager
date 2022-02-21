@@ -299,6 +299,18 @@ def studiolist(page=1):
     return render_template('main.html', tagtype="studio",
                            pagination=pagination, pagination_endpoint="studiolist", pagination_vals={})
 
+@app.route('/histrion/')
+@app.route('/histrion/page/<int:page>', methods=["GET", "POST"])
+def histrionlist(page=1):
+    counts = func.count(1)
+    pagination = Histrion.query.with_entities(Histrion.id, Histrion.actname.label('name'),func.count('*').label('count')) \
+        .join(av_histrion) \
+        .order_by(counts.desc(), Histrion.actname) \
+        .group_by(Histrion.id) \
+        .paginate(page, per_page=60, error_out=False)
+    return render_template('main.html', tagtype="histrion",
+                           pagination=pagination, pagination_endpoint="histrionlist", pagination_vals={})
+
 # 详情页
 @app.route('/movie/<int:id>')
 def movie(id):
@@ -419,4 +431,4 @@ def get_actressbox_html(stats):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5001)

@@ -29,11 +29,12 @@ def crawler_dmmmoive(cid):
     title=Tools.dmm_title_transform(title)
 
     rdate = None
-    rdatefind = re.findall('<td align="right" valign="top" class="nw">商品発売日：</td>[\s]*<td>[\s]*(.*?)[\s]*</td>[\s]*</tr>',
+    rdatefind = re.findall('商品発売日：</td>[\s]*<td>[\s]*(.*?)[\s]*</td>[\s]*</tr>',
                        html)
     if len(rdatefind) == 0 or rdatefind[0] == '----':
-        rdatefind = re.findall(
-            '<td align="right" valign="top" class="nw">配信開始日：</td>[\s]*<td>[\s]*(.*?)[\s]*</td>[\s]*</tr>', html)
+        rdatefind = re.findall( '配信開始日：</td>[\s]*<td>[\s]*(.*?)[\s]*</td>[\s]*</tr>', html)
+    if len(rdatefind) == 0:
+        rdatefind = re.findall( '配信開始日：</td>[\s]*<td valign="top">[\s]*(.*?)[\s]*</td>[\s]*</tr>', html)
     if len(rdatefind) > 0 and rdatefind[0] != '----':
         rdate = rdatefind[0]
         if len(rdate) > 10:
@@ -178,7 +179,7 @@ def spider_by_sitemap():
 
 def spider_newrelease():
     for pageindex in range(1,31):# maxpage:417
-        dvdlisturl = f'https://www.dmm.co.jp/digital/videoc/-/list/=/sort=date/page={pageindex}/'
+        dvdlisturl = f'https://www.dmm.co.jp/digital/videoa/-/list/=/sort=date/page={pageindex}/'
         html = CrawlerHelper.get_requests(dvdlisturl, cookies=dmmcookie)
         if not html or html.status_code == 404:
             return
@@ -195,6 +196,29 @@ def spider_newrelease():
                 elif not avitem.rdate:
                     crawler_dmmmoive(cid)
 
+def spider_reserve():
+    #予約商品
+    pageindex = 1
+    while True:# maxpage:417
+        dvdlisturl = f'https://www.dmm.co.jp/digital/videoa/-/list/=/reserve=only/sort=date/page={pageindex}/'
+        html = CrawlerHelper.get_requests(dvdlisturl, cookies=dmmcookie)
+        if not html or html.status_code == 404:
+            return
+        bs = BeautifulSoup(html.text, "html.parser")
+        dvdurls = bs.find_all('a', href=re.compile('https://www.dmm.co.jp/digital/videoa/-/detail/=/cid='))
+        for dvdurl in dvdurls:
+            cid = re.findall('https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=(.*?)/', dvdurl['href'])[0]
+            avitem = DBHelper.get_movie_by_cid(1, cid)
+            if not avitem:
+                crawler_dmmmoive(cid)
+            else:
+                if avitem.piccount == 0:
+                    crawler_dmmmoive(cid)
+        pageindex+=1
+        if not bs.find('a',href=f'/digital/videoa/-/list/=/reserve=only/sort=date/page={pageindex}/'):
+            break
+
 if __name__ == '__main__':
-    # spider_by_sitemap()
-    spider_newrelease()
+    spider_by_sitemap()
+    #spider_reserve()
+    #spider_newrelease()

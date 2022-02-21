@@ -54,6 +54,8 @@ class AV(db.Model):
     series_id = db.Column(db.Integer, db.ForeignKey('t_series.id'))
     studio_id = db.Column(db.Integer, db.ForeignKey('t_studio.id'))
 
+    magnets = db.relationship('Magnet', backref='av',lazy='dynamic')
+
     def is_favorite(self):
         favorite = Favorite.query \
             .filter(and_(Favorite.ftype == 1, Favorite.fid == self.id)).first()
@@ -158,3 +160,15 @@ class Favorite(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     fid = db.Column(db.Integer)
     ftype = db.Column(db.Integer)       # 1-movie 2-actress 3-studio 4-label 5-series
+
+class Magnet(db.Model):
+    __tablename__="t_magnet"
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
+    hashinfo = db.Column(db.String(40),nullable=False)
+    description = db.Column(db.String(40), nullable=False)
+    size = db.Column(db.String(40), nullable=False)
+    date = db.Column(db.String(40), nullable=False)
+    av_id = db.Column(db.Integer, db.ForeignKey('t_av.id',ondelete='CASCADE'))
+
+    __mapper_args__ = {"order_by": date.desc()}

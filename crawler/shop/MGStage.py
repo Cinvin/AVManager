@@ -40,19 +40,24 @@ def spider_by_maker(freq:int):
     data = gzip.decompress(data.content).decode('utf8')
     bs = BeautifulSoup(data, "xml")
     links = bs.find_all("loc")
-    links = links[314:]
+    idx = 45
+    links = links[idx:]
+    #独占
+    link = ['https://www.mgstage.com/search/cSearch.php?search_word=&maker[]=Jackson_0&sort=new&list_cnt=120&type=top',
+            ]
     del data
     del bs
     for link in links:
         link=link.get_text()
         urlbase = link+'&page={page}'
         pageindex=1
+        idx=idx+1
         while 1==1:
             url=urlbase.replace('{page}',str(pageindex))
             html = gethtml(url)
             bs = BeautifulSoup(html, "html.parser")
             studio=bs.find('input',class_='b_image_word_ids')["value"][:-2]
-            print(f"studio:{studio} page:{str(pageindex)}")
+            print(f"studio:{studio} page:{pageindex} {idx}")
 
             mgscode = re.findall(f'https://image.mgstage.com/images/(.*?)/', html)
             if len(mgscode) > 0:
@@ -69,6 +74,8 @@ def spider_by_maker(freq:int):
                 cid = re.findall('/product/product_detail/(.*?)/',url)[0]
                 code=getcode_by_piccode_mgstage(cid)
                 avitem=DBHelper.get_movie_by_cid(2,cid)
+                if not avitem:
+                    avitem=DBHelper.get_movie_obj(code,studio)
                 if avitem:
                     continue
                 if not DBHelper.check_movie_exist_with_title_similar(code,title):
@@ -103,6 +110,32 @@ def spider_newrelease():
                 # sleep(freq)
         if len(linktags) == 0:
             break
+
+def spider_reservation():
+    pageindex = 1
+    while True:
+        listurl = f'https://www.mgstage.com/search/cSearch.php?sort=popular&list_cnt=120&range=reservation&type=top&page={pageindex}'
+        html = gethtml(listurl)
+        bs = BeautifulSoup(html, "html.parser")
+        linktags = bs.find_all('a', href=re.compile('/product/product_detail/'))
+        for linktag in linktags:
+            titletag = linktag.find('p')
+            if titletag is None:
+                continue
+            url = linktag["href"]
+            title = titletag.get_text().split(' ')[0]
+            title = title_transfrom(title)
+            cid = re.findall('/product/product_detail/(.*?)/', url)[0]
+            code = getcode_by_piccode_mgstage(cid)
+            avitem = DBHelper.get_movie_by_cid(2, cid)
+            if avitem:
+                continue
+            if not DBHelper.check_dvdid_exist(code):
+                spider_moviePage('https://www.mgstage.com' + url)
+                # sleep(freq)
+        if len(linktags) == 0:
+            break
+        pageindex=pageindex+1
 
 #https://www.mgstage.com/product/product_detail/022SGSR-079/
 def spider_moviePage(url):
@@ -256,6 +289,7 @@ def title_transfrom(title):
     return title
 
 if __name__ == '__main__':
-    spider_newrelease()
-    #spider_by_sitemap(freq=freq)
+    #spider_newrelease()
+    #spider_reservation()
+    spider_by_sitemap(freq=freq)
     #spider_by_maker(freq=freq)
