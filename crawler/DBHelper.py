@@ -216,8 +216,11 @@ def save_movie(code, title, category=1, length=None, rdate=None, director=None, 
         printtext+=' update'
     print(printtext)
 
-def save_movie_actress(cid,source,actresslist):
-    avitem = get_movie_by_cid(source, cid)
+def save_movie_actress(cid,source,actresslist,av_id=None):
+    if av_id:
+        avitem = session.query(AV).filter_by(id=av_id).first()
+    else:
+        avitem = get_movie_by_cid(source, cid)
     if not avitem:
         return
     actresses = session.query(Actress).filter(Actress.actname.in_(actresslist)).all()

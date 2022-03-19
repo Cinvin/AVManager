@@ -213,6 +213,12 @@ class Pictures:
             self.detail_small = []
             self.detail_large = []
 
+        elif movie.source == 1000:
+            slpited=movie.piccode.split(' ')
+            self.poster_small = slpited[0]
+            self.poster_large = slpited[1]
+            self.detail_small = []
+            self.detail_large = []
 def get_pslist(avs:list):
     pslist={}
     for av in avs:
@@ -286,6 +292,8 @@ def get_psurl(av:AV):
         return f'https://www.heyzo.com/contents/3000/{av.code.split("-",1)[1]}/images/thumbnail.jpg'
     elif av.source == 1010:
         return f'https://my.cdn.tokyo-hot.com/media/{av.cid}/list_image/{av.piccode}/220x124_default.jpg'
+    elif av.source == 1000:
+        return av.piccode.split(' ')[0]
 
 @functools.lru_cache()
 def get_mgscode(studio_id):
