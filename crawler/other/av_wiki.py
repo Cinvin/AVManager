@@ -22,10 +22,10 @@ def pagelist(url,maxpage=None):
             cid=None
             if mgstage:
                 cid=re.findall('mgstage.com/product/product_detail/(.*?)/',mgstage['href'])[0]
-            fanza_digital = article.find('img', {'data-src':re.compile('pics.dmm.co.jp/digital/video/(.*?)/')})
+            fanza_digital = article.find('source', {'data-srcset':re.compile('pics.dmm.co.jp/digital/video/(.*?)/')})
             fanza_amateur = article.find('img', {'data-src':re.compile('pics.dmm.co.jp/digital/amateur/(.*?)/')})
             if fanza_digital:
-                cid = re.findall('pics.dmm.co.jp/digital/video/(.*?)/', fanza_digital['data-src'])[0]
+                cid = re.findall('pics.dmm.co.jp/digital/video/(.*?)/', fanza_digital['data-srcset'])[0]
             if fanza_amateur:
                 cid = re.findall('pics.dmm.co.jp/digital/amateur/(.*?)/',fanza_amateur['data-src'])[0]
 
@@ -62,10 +62,10 @@ def pagelist(url,maxpage=None):
                 sqlres2=sqlhelper.fetchone('select count(1) as c from t_av_actress where av_id=%s',sqlres['id'])
                 if len(actresslist)<=sqlres2['c']:
                     continue
-            elif mgstage:
-                source=2
             elif fanza_amateur:
                 source=4
+            elif mgstage:
+                source=2
             print(cid,rdate,source,actresslist)
             DBHelper.save_movie_actress(cid,source,actresslist)
         if maxpage and maxpage == pageindex:
@@ -81,8 +81,8 @@ def get_new():
     pagelist('https://av-wiki.net/fanza-shirouto',maxpage=10)
 
 if __name__ == '__main__':
-    #get_new()
+    get_new()
     #pagelist('https://av-wiki.net/mgstage', maxpage=100)
     #pagelist('https://av-wiki.net/fanza-video', maxpage=200)
-    pagelist('https://av-wiki.net/fanza-shirouto', maxpage=30)
+    #pagelist('https://av-wiki.net/fanza-shirouto', maxpage=30)
 

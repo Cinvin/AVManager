@@ -6,8 +6,8 @@
             <div class="item">
                 <div class="avatar-box">
                     <div class="photo-frame">
-                        {% if actress.piccode %}
-                        <img src="https://pics.dmm.co.jp/mono/actjpgs/{{ actress.piccode }}.jpg" title="">
+                        {% if actress.avatar %}
+                        <img src="{{actress.avatar}}" title="">
                         {% else %}
                         <img src="https://pics.dmm.co.jp/mono/actjpgs/nowprinting.gif" title="">
                         {% endif %}
@@ -34,10 +34,19 @@
                         <p>臀围: {{ actress.hips }}cm</p>
                         {% endif %}
                         {% if actress.birthplace %}
+                        {% if actress.bloodtype %}
+                        <p>血型: {{ actress.bloodtype }}</p>
+                        {% endif %}
                         <p>出生地: {{ actress.birthplace }}</p>
                         {% endif %}
                         {% if actress.hobby %}
                         <p>爱好: {{ actress.hobby }}</p>
+                        {% endif %}
+                        {% if actress.twitter %}
+                        <p>twitter: <a href="https://twitter.com/{{ actress.twitter }}">@{{ actress.twitter }}</a></p>
+                        {% endif %}
+                        {% if actress.instagram %}
+                        <p>instagram: <a href="https://instagram.com/{{ actress.instagram }}">@{{ actress.instagram }}</a></p>
                         {% endif %}
                     </div>
                 </div>

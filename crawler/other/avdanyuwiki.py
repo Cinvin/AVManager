@@ -3,8 +3,6 @@ import re
 import sqlhelper
 from crawler import CrawlerHelper, DBHelper, Tools
 from crawler.shop.fanza_amateur import crawler_dmm_amateur_page
-#https://av-wiki.net/mgstage/
-#https://av-wiki.net/fanza-shirouto/
 
 def pagelist(maxpage=None):
     pageindex=1

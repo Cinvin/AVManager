@@ -1,8 +1,11 @@
-from crawler import CrawlerHelper
+from concurrent.futures import ThreadPoolExecutor
+
+from crawler import CrawlerHelper, DBHelper
 import re
 from bs4 import BeautifulSoup
 import sqlhelper
 from time import sleep
+from model import Actress
 dmmcookie={'age_check_done':'1'}
 def update_actress_piccode():
     '''
@@ -102,6 +105,103 @@ def get_dmmdvd_makerid():
                                           makername, makerid)
                         print(f"insert {makername} {makerid}")
 
+def update_actress_info_by_id(act_fanzaid):
+    html = CrawlerHelper.get_requests(f'https://actress.dmm.co.jp/-/detail/=/actress_id={act_fanzaid}/', cookies=dmmcookie)
+    if html.status_code==404:
+        return
+    bs = BeautifulSoup(html.text, "html.parser")
+    actname=bs.find('meta',property='og:title')['content']
+    actressimg=bs.find('img',src=re.compile('https://pics\.dmm\.co\.jp/mono/actjpgs/.*?\.jpg'))
+    avatar=None
+    piccode=None
+    if actressimg:
+        piccode=re.findall('https://pics\.dmm\.co\.jp/mono/actjpgs/(.*?)\.jpg',actressimg['src'])[0]
+        if piccode=='printing':
+            piccode=None
+        else:
+            avatar=actressimg['src']
+    p_list_profile=bs.find('dl',class_='p-list-profile')
+    dds=p_list_profile.find_all('dd')
+    birth = dds[0].get_text().strip()
+    bloodtype=dds[2].get_text().strip()
+    body = dds[3].get_text().strip()
+    birthplace = dds[4].get_text().strip()
+    hobby = dds[5].get_text().strip()
+    height, bust, cup, waist, hips=(None,None,None,None,None)
+    if birth=='---':
+        birth=None
+    else:
+        birth=re.sub('年|月','-',birth)[:-1]
+    if body != '---':
+        findheight=re.findall('T(\d*)cm',body)
+        if len(findheight)>0:
+            height=findheight[0]
+        findbust = re.findall('B(\d*)cm', body)
+        if len(findbust) > 0:
+            bust = findbust[0]
+        findcup = re.findall('\(([A-Z])カップ\)', body)
+        if len(findcup) > 0:
+            cup = findcup[0]
+        findwaist = re.findall('W(\d*)cm', body)
+        if len(findwaist) > 0:
+            waist = findwaist[0]
+        findhips = re.findall('H(\d*)cm', body)
+        if len(findhips) > 0:
+            hips = findhips[0]
+    if bloodtype=='---':
+        bloodtype=None
+    if birthplace=='---':
+        birthplace=None
+    if hobby=='---':
+        hobby=None
+    print(act_fanzaid,actname,piccode,birth,bloodtype,height,bust,cup,waist,hips,birthplace,hobby)
+    session = DBHelper.get_session()
+    actress = session.query(Actress).filter(Actress.fanzaid == act_fanzaid).first()
+    if not actress:
+        actress = session.query(Actress).filter(Actress.actname == actname , Actress.fanzaid is None).first()
+    if not actress:
+        actress=Actress()
+        actress.actname=actname
+        session.add(actress)
+
+    actress.actname = actname
+    if birth and not actress.birthday:
+        actress.birthday = birth
+    if height and not actress.height:
+        actress.height = height
+    if bloodtype and not actress.bloodtype:
+        actress.bloodtype=bloodtype
+    if cup and not actress.cup:
+        actress.cup = cup
+    if bust and not actress.bust:
+        actress.bust = bust
+    if waist and not actress.waist:
+        actress.waist = waist
+    if hips and not actress.hips:
+        actress.hips = hips
+    if birthplace and not actress.birthplace:
+        actress.birthplace = birthplace
+    if hobby and not actress.hobby:
+        actress.hobby = hobby
+    if piccode and not actress.piccode:
+        actress.piccode = piccode
+    if avatar and not actress.avatar:
+        actress.avatar = avatar
+    if not actress.fanzaid:
+        actress.fanzaid = act_fanzaid
+    session.commit()
+    session.close()
+    #fanza_digital.spider_byactid(actfanzaid=act_fanzaid)
+
+def update_actinfo():
+    result=sqlhelper.fetchall("SELECT fanzaid from t_actress WHERE fanzaid>=%s and fanzaid is not null ORDER BY fanzaid",
+                              0)
+    resultcount=len(result)
+    with ThreadPoolExecutor(max_workers=8) as t:
+        for i in range(0, resultcount):
+            t.submit(update_actress_info_by_id, result[i]['fanzaid'])
+
+
 if __name__ == '__main__':
-    #get_dmmdvd_makerid()
-    update_actress_piccode()
+    update_actinfo()
+

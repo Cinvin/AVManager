@@ -1,4 +1,6 @@
 import urllib.parse
+from concurrent.futures import ThreadPoolExecutor
+
 from bs4 import BeautifulSoup
 import re
 from crawler import CrawlerHelper
@@ -21,6 +23,7 @@ def spider_actresslist():
               '女優ページ一覧：ら・わ行', 'グラビアアイドル一覧']
 
     urllist=['http://sougouwiki.com/d/'+encode(a) for a in pagelist]
+    actressesurls=[]
     for url in urllist:
         html=CrawlerHelper.get_requests(url).text
         bs = BeautifulSoup(html, "html.parser")
@@ -35,13 +38,11 @@ def spider_actresslist():
                 if sqlhelper.fetchone('select 1 from t_actress a where exists(select 1 from t_actress b where a.mainid=b.id and b.actname=%s)',actname):
                     continue
                 link = acttag['href']
-                print(f'{actname} {link}')
                 spider_actresspage(link)
 
 def spider_actresspage(url):
     html = CrawlerHelper.get_requests(url).text
     bs = BeautifulSoup(html, "html.parser")
-
     h3=bs.find('h3',id='content_1')
     if not h3:
         return
@@ -50,29 +51,29 @@ def spider_actresspage(url):
         return
     actnames=h3.find_all('a')
     act_contactdict = {}
-
     actliststr = h3.get_text()
+
     for act in actnames:
-        href=act['href']
-        found=re.findall('/article=actress/id=(.*?)/',href)
-        if len(found)==0:
+        href = act['href']
+        found = re.findall('/article=actress/id=(.*?)/', href)
+        if len(found) == 0:
             found = re.findall('/article=actor/id=(.*?)/', href)
         if len(found):
-            actname=act.get_text()
+            actname = act.get_text()
             actliststr.replace(actname, '')
             if '／' in actname and mainname in actname:
-                actname=mainname
+                actname = mainname
             else:
                 actname = actname.split(' ※', 1)[0]
                 actname = actname.split('*', 1)[0]
                 actname = actname.split('(', 1)[0].strip()
-                actname = actname.split('（',1)[0].strip()
+                actname = actname.split('（', 1)[0].strip()
             if actname not in act_contactdict:
-                act_contactdict[actname]=found[0]
+                act_contactdict[actname] = found[0]
 
-    actnamesplit=actliststr.split('／')
+    actnamesplit = actliststr.split('／')
     for act in actnamesplit:
-        actname = act.split('※',1)[0]
+        actname = act.split('※', 1)[0]
         actname = actname.split('*', 1)[0]
         actname = actname.split('(', 1)[0]
         actname = actname.split('（', 1)[0].strip()
@@ -82,7 +83,37 @@ def spider_actresspage(url):
         return
     print(mainname)
     print(act_contactdict)
-    save_actinfo(act_contactdict,mainname)
+    save_actinfo(act_contactdict, mainname)
+
+    twittertags=bs.find_all('a',href=re.compile('twitter.com/.*?'))
+    twitter=None
+    for twittertag in twittertags:
+        if twittertag.parent.name != 'del':
+            twittertext=twittertag['href'].rstrip('/')
+            if twittertext=='https://twitter.com/share':
+                continue
+            twitter=re.findall('twitter.com/(.*?)$',twittertext)[0]
+            if '/' in twitter:
+                twitter = twitter.split('/')[0]
+            break
+
+    #social media
+    instagramtags = bs.find_all('a', href=re.compile('instagram.com/*?'))
+    instagram = None
+    for instagramtag in instagramtags:
+        if instagramtag.parent.name != 'del':
+            instagramtext = instagramtag['href'].rstrip('/')
+            instagram = re.findall('instagram.com/(.*?)$', instagramtext)[0]
+            if '/' in instagram:
+                instagram = instagram.split('/')[0]
+            break
+    print(mainname,twitter,instagram)
+    result=sqlhelper.fetchone('select count(1) as c from t_actress where actname=%s',mainname)
+    if result and result['c']==1:
+        if twitter:
+            sqlhelper.execute('update t_actress set twitter=%s where actname=%s',twitter,mainname)
+        if instagram:
+            sqlhelper.execute('update t_actress set instagram=%s where actname=%s',instagram,mainname)
 def save_actinfo(act_contactdict,mainname):
     for k,v in act_contactdict.items():
         if v:
@@ -271,5 +302,6 @@ def msgtage_amteur_actress():
             seriestablepageinfo(link['href'])
 
 if __name__=='__main__':
-    fanza_amteur_actress()
-    msgtage_amteur_actress()
+    spider_actresslist()
+    # fanza_amteur_actress()
+    # msgtage_amteur_actress()

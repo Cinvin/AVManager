@@ -2,6 +2,8 @@ import json
 import string
 from bs4 import BeautifulSoup
 import re
+
+import sqlhelper
 from crawler import CrawlerHelper
 from datetime import datetime
 from time import sleep
@@ -192,6 +194,11 @@ def spider_moviePage(url):
         elif tkey == '出演：':
             acttags = tval.find_all('a')
             for acttag in acttags:
+                actname=acttag.get_text().strip()
+                actimgurl=f'https://static.mgstage.com/mgs/img/common/actress/{actname}.jpg'
+                if bs.find('img',src=actimgurl) and not sqlhelper.fetchone('select 1 from t_actress where actname=%s',actname):
+                    sqlhelper.execute('insert into t_actress(actname,avatar) values(%s,%s)',actname,actimgurl)
+                    #insert into javlibrary_maker(studio_code,studio_name) values(%s,%s)
                 actslist.append(acttag.get_text().strip())
         elif tkey == 'メーカー：':
             studio=tval.get_text().strip()

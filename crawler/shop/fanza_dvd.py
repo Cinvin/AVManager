@@ -1,8 +1,11 @@
 import re
 import string
 
+import sqlhelper
 from crawler import Tools, DBHelper, CrawlerHelper
 from bs4 import BeautifulSoup
+
+from crawler.shop import fanza_actinfo
 
 dmmcookie={'age_check_done':'1'}
 
@@ -63,7 +66,8 @@ def crawler_dmmdvd_page(cid):
 
     histrionlist=[]
     actslist=[]
-
+    actsdict = {}
+    histriondict = {}
     performerbs=bs.find('span',id='performer')
 
     #'/mono/dvd/-/detail/performer/=/cid=53dv461/'
@@ -77,19 +81,15 @@ def crawler_dmmdvd_page(cid):
     for actstag in actstags:
         actname=actstag.get_text()
         actid = re.findall('/id=(.*?)/', str(actstag['href']))[0]
-        dbactname=DBHelper.get_actname_by_fanzaid(actid)
-        if dbactname:
-            actname=dbactname
-        else:
-            DBHelper.save_actress_fanzaid(actname,actid)
-        actslist.append(actname)
+        actsdict[actid]=actname
+        if not sqlhelper.fetchone('select 1 from t_actress where fanzaid=%s', actid):
+            fanza_actinfo.update_actress_info_by_id(actid)
 
     actstags = performerbs.find_all('a', href=re.compile('/mono/dvd/-/list/=/article=histrion/'))
     for actstag in actstags:
         actname = actstag.get_text()
         actid = re.findall('/id=(.*?)/', str(actstag['href']))[0]
-        DBHelper.save_histrion_fanzaid(actname, actid)
-        histrionlist.append(actname)
+        histriondict[actid]=actname
     genrelist = []
     #ジャンル：</td>(.*?)</tr>
     genrearea=re.findall('ジャンル：</td>[\s]*(.*?)[\s]*</tr>',html)[0]
@@ -118,6 +118,8 @@ def crawler_dmmdvd_page(cid):
                     if piccodeav:
                         if piccodeav.source != 3:
                             print(f'had existed {piccodeav.source} {piccodeav.cid} {piccodeav.piccode}')
+                            if len(actsdict)>piccodeav.actresses.count():
+                                DBHelper.save_movie_actress(piccodeav.cid,piccodeav.source,[],piccodeav.id,actsdict)
                             return
                         if len(piccodeav.cid) > len(cid):
                             piccodeav.cid = cid
@@ -150,12 +152,13 @@ def crawler_dmmdvd_page(cid):
     print(f'label:{label}')
     print(f'series:{series}')
     print(f'pic:{piccode} count:{piccount}')
-    print(actslist)
+    print(actsdict,histriondict)
     print(genrelist)
     DBHelper.save_movie(code=code,cid=cid,title=title, length=length, rdate=rdate,
                         director=director, studio=studio, label=label, series=series,
                         piccode=piccode, piccount=piccount, source=3,
-                        actresslist=actslist, genrelist=genrelist,histrionlist=histrionlist)
+                        actresslist=actslist, genrelist=genrelist,histrionlist=histrionlist,
+                        actress_fanzaidlist=actsdict,histrion_fanzaidlist=histriondict)
 
 def spider_by_dmm_dvd_maker(makerid):
     pageindex=1
@@ -213,5 +216,39 @@ def spider_dmm_dvd_newrelease():
             or DBHelper.check_dvdid_exist(dvdid):
                 continue
             crawler_dmmdvd_page(cid)
+
+def spider_by_dmm_dvd_actid(actfanzaid):
+    pageindex=1
+    while True:
+        dvdlisturl=f'https://www.dmm.co.jp/mono/dvd/-/list/=/article=actress/id={actfanzaid}/page={pageindex}/'
+        html=CrawlerHelper.get_requests(dvdlisturl,cookies=dmmcookie)
+        if not html or html.status_code==404:
+            return
+        if html.url!=dvdlisturl and pageindex>1:
+            return
+        bs = BeautifulSoup(html.text, "html.parser")
+        dvdurls=bs.find_all('a',href=re.compile('https://www.dmm.co.jp/mono/dvd/-/detail/=/cid='))
+        for dvdurl in dvdurls:
+            cid = re.findall('https://www.dmm.co.jp/mono/dvd/-/detail/=/cid=(.*?)/', dvdurl['href'])[0]
+            if not DBHelper.get_movie_by_cid(3,cid):
+                continue
+            if len(re.findall('^(pb|tk|gk|dk|4k)', cid)) > 0 \
+                    or len(re.findall('^[a-z][0-9][a-z]', cid)) > 0 \
+                    or len(re.findall('^9[a-z]', cid)) > 0 \
+                    or len(re.findall('^(h_|n_)?[0-9]+(pb|tk|gk|dk|4k)', cid)) > 0 \
+                    or len(re.findall('[a-z]$', cid)) > 0 \
+                    or len(re.findall('tk[0-9]$', cid)) > 0:
+                continue
+
+            result = sqlhelper.fetchone(
+                'select 1 from t_av_actress a,t_av b,t_actress c where a.av_id=b.id and a.actress_id=c.id and b.cid=%s and b.source=3 and c.fanzaid=%s',
+                cid, actfanzaid)
+            if not result:
+                crawler_dmmdvd_page(cid)
+        if len(re.findall('>次へ</a>',html.text))>0:
+            pageindex+=1
+        else:
+            break
+
 if __name__ == '__main__':
     spider_dmm_dvd_newrelease()

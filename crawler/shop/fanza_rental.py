@@ -192,7 +192,7 @@ def spider_by_dmm_rental_maker(makerid):
                 continue
 
             crawler_dmm_rental_page(cid)
-        if len(re.findall('次へ',html.text))>0:
+        if len(re.findall('>次へ</a>',html.text))>0:
             pageindex+=1
         else:
             break

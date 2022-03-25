@@ -65,15 +65,22 @@ class AV(db.Model):
 class Actress(db.Model):
     __tablename__="t_actress"
     id = db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
-    actname=db.Column(db.String(50),nullable=False)
+    actname=db.Column(db.String(50,collation='NOCASE'),nullable=False)
     birthday=db.Column(db.Date)
     height = db.Column(db.Integer)
+    bloodtype = db.Column(db.String(8))
     cup = db.Column(db.String(50))
     bust = db.Column(db.Integer)
     waist = db.Column(db.Integer)
     hips = db.Column(db.Integer)
     birthplace = db.Column(db.String(255))
     hobby = db.Column(db.String(255))
+
+    avatar = db.Column(db.String(255))
+
+    twitter = db.Column(db.String(32))
+    instagram = db.Column(db.String(32))
+
     piccode = db.Column(db.String(50))
     mainid = db.Column(db.Integer)
     fanzaid = db.Column(db.Integer)

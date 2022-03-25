@@ -83,8 +83,8 @@
             <div class="avatar-box">
                 <a href="{{ url_for('movielist',filtertype='actress',filterkey=actress.id) }}">
                     <div class="photo-frame">
-                    {% if actress.piccode %}
-                    <img src="https://pics.dmm.co.jp/mono/actjpgs/{{ actress.piccode }}.jpg" title="">
+                    {% if actress.avatar %}
+                    <img src="{{ actress.avatar }}" title="">
                     {% else %}
                     <img src="https://pics.dmm.co.jp/mono/actjpgs/nowprinting.gif" title="">
                     {% endif %}

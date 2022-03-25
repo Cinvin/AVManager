@@ -123,10 +123,6 @@ def movielist(filtertype=None, filterkey=None):
        pagination = AV.query.with_entities(AV.id, AV.cid, AV.code, AV.title, AV.rdate, AV.piccode, AV.studio_id,
                                             AV.source) \
            .order_by(AV.id.desc()).paginate(page, per_page=30, error_out=False)
-       # pagination = AV.query.with_entities(AV.id, AV.cid, AV.code, AV.title, AV.rdate, AV.piccode, AV.studio_id,
-       #                                     AV.source) \
-       #     .filter(and_(AV.source == 3, AV.piccode.like("%so"))) \
-       #     .order_by(AV.rdate.desc(), AV.code).paginate(page, per_page=30, error_out=False)
     else:
         pagination = AV.query.with_entities(*fieldlist)\
             .filter(False) \
@@ -200,10 +196,10 @@ def favorites(ftype, page=1):
                                pagination_vals={"ftype": ftype})
     elif ftype=="actress":
         counts = func.count(1)
-        pagination = Actress.query.with_entities(Actress.id, Actress.actname, Actress.piccode) \
+        pagination = Actress.query.with_entities(Actress.id, Actress.actname, Actress.avatar) \
             .join(av_actress) \
             .filter(Actress.id == Favorite.fid , Favorite.ftype == 2) \
-            .order_by(counts.desc(), Actress.piccode) \
+            .order_by(counts.desc(), Actress.avatar) \
             .group_by(Actress.id) \
             .paginate(page, per_page=35, error_out=False)
         return render_template('main.html', pagetype="actresslist",
@@ -253,7 +249,7 @@ def actresslist():
     page = request.args.get('page', 1)
     page = int(page)
     counts = func.count(1)
-    pagination = Actress.query.with_entities(Actress.id, Actress.actname, Actress.piccode) \
+    pagination = Actress.query.with_entities(Actress.id, Actress.actname, Actress.avatar) \
         .join(av_actress) \
         .order_by(counts.desc(),Actress.actname) \
         .group_by(Actress.id) \
@@ -395,7 +391,7 @@ def predict_image():
         imgsrc = f'data:image/jpeg;base64,{s}'
         return jsonify({"success": 404, "img": imgsrc, "html": "未识别出人脸"})
 
-    stats = Actress.query.with_entities(Actress.id, Actress.actname, Actress.piccode) \
+    stats = Actress.query.with_entities(Actress.id, Actress.actname, Actress.avatar, Actress.piccode) \
         .filter(Actress.piccode.in_(names)).all()
     for stat in stats:
         while stat.piccode in names:
@@ -416,8 +412,8 @@ def get_actressbox_html(stats):
                 <a class="avatar-box text-center" href="{url_for('movielist', filtertype='actress', filterkey=actress.id)}">
                     <div class="photo-frame">
 """
-        if actress.piccode:
-            basehtml += f"<img src='https://pics.dmm.co.jp/mono/actjpgs/{actress.piccode}.jpg' title=''>"
+        if actress.avatar:
+            basehtml += f"<img src='{actress.piccode}' title=''>"
         else:
             basehtml += f"https://pics.dmm.co.jp/mono/actjpgs/nowprinting.gif' title=''>"
         basehtml += f"""

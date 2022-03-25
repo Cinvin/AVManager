@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 import re
+
+import sqlhelper
 from crawler import CrawlerHelper
 from time import sleep
 from crawler import DBHelper
@@ -345,6 +347,24 @@ def crawler_moviepage_ppv(url,code=None,rdate=None,length=None):
                         director=None, studio=studio, label=None, series=series,
                         piccode=piccode, piccount=piccount, source=6,
                         actresslist=actresslist, genrelist=genrelist)
+
+def get_avatars():
+    keywordlist = ['1', '6', '11', '16', '21', '26', '31', '36', '39', '44']
+    for i in range(1, 11):
+        url = f'https://www.aventertainments.com/Artresslistsjp.aspx?languageID=2&Head_id={keywordlist[i - 1]}&g={i}'
+        html = CrawlerHelper.get_requests(url).text
+        bs = BeautifulSoup(html, "html.parser")
+        imgs = bs.find_all('img', src=re.compile('https://imgs02.aventertainments.com/ActressImage/LargeImage/.*?.jpg'),
+                           class_='img-fluid')
+        for img in imgs:
+            actname = img['title']
+            url = img['src']
+            res = sqlhelper.fetchone(
+                'select id from t_actress a where avatar is null and actname=%s and exists(select 1 from t_av_actress b where a.id=b.actress_id and exists(select 1 from t_av c where c.id=b.av_id and c.source in (5,6)))',
+                actname)
+            if res:
+                sqlhelper.execute('update t_actress set avatar=%s where id=%s', url, res['id'])
+                print(actname, url, res['id'])
 
 if __name__ == '__main__':
     #spider_new_dvdlist()

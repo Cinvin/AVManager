@@ -1,39 +1,38 @@
 from datetime import datetime
 import re
-import requests
-
-from crawler import CrawlerHelper
+from concurrent.futures.thread import ThreadPoolExecutor
+import sqlhelper
+from crawler import CrawlerHelper, DBHelper
 from bs4 import BeautifulSoup
 from model import *
 
-def updateactressinfo(actname, session):
+def updateactressinfo(actname):
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]{actname} start")
-    pageurl = "https://www.minnano-av.com/search_result.php?search_scope=actress&search_word=actressname&search=+Go+"
+    pageurl = "http://www.minnano-av.com/search_result.php?search_scope=actress&search_word=actressname&search=+Go+"
     url = pageurl.replace("actressname", actname)
     html = CrawlerHelper.get_requests(url)
-    if html.url.startswith("https://www.minnano-av.com/search_result.php?"):
+
+    acttext = None
+
+
+    if html.url.startswith("http://www.minnano-av.com/search_result.php?"):
+        bs_actlist=BeautifulSoup(html.text, "html.parser")
+        actatags=bs_actlist.find_all('a',href=re.compile(f'actress\d*.html\?{actname}'))
+        for acttag in actatags:
+            if acttag.get_text()==actname:
+                acturl=acttag['href']
+                htmlactpage = CrawlerHelper.get_requests(f'http://www.minnano-av.com/{acturl}')
+                if len(re.findall(f'<title>{actname}（',htmlactpage.text))>0:
+                    acttext=htmlactpage.text
+                    break
+    else:
+        acttext = html.text
+
+    if not acttext:
+        print(f'not found {actname}')
         return
-    acttext=html.text
+
     bs = BeautifulSoup(acttext, "html.parser")
-    nametext = bs.h1.find("span").get_text()
-    piccode = None
-    if r"/" in nametext:
-        piccode = nametext.split(r"/")[-1].strip()
-        piccode = piccode.replace(" ", "_").lower()
-        pichtml = requests.get(f"https://pics.dmm.co.jp/mono/actjpgs/{piccode}.jpg", stream=True)
-        if pichtml.url == "https://pics.dmm.com/mono/movie/n/now_printing/now_printing.jpg":
-            othercode = piccode.replace("tsu", "tu")
-            othercode = othercode.replace("shi", "si")
-            othercode = othercode.replace("chi", "ci")
-            othercode = othercode.replace("fu", "hu")
-            if othercode != piccode:
-                pichtml = requests.get(f"https://pics.dmm.co.jp/mono/actjpgs/{othercode}.jpg", stream=True)
-                if pichtml.url != "https://pics.dmm.com/mono/movie/n/now_printing/now_printing.jpg":
-                    piccode=othercode
-                else:
-                    piccode=None
-            else:
-                piccode = None
 
     # 生日
     birth = re.findall('<span>生年月日</span><p>(\d*年\d*月\d*)日', acttext)
@@ -78,6 +77,12 @@ def updateactressinfo(actname, session):
     else:
         hips = None
 
+    blood_type_tag = bs.find('a',href=re.compile('actress_list.php\?blood_type='))
+    bloodtype=None
+    if blood_type_tag:
+        bloodtype=re.findall('blood_type=(.*?)$',blood_type_tag['href'])[0]
+
+
     bptag = bs.find_all('a', href=re.compile("place"))
     if len(bptag) > 0:
         birthplace = bptag[0].get_text()
@@ -92,29 +97,81 @@ def updateactressinfo(actname, session):
     else:
         hobby = None
 
+    twittertags = bs.find_all('a', href=re.compile('twitter.com/.*?'))
+    twitter = None
+    for twittertag in twittertags:
+        twittertext = twittertag['href'].rstrip('/')
+        if twittertext != 'https://twitter.com/share':
+            twitter = re.findall('twitter.com/(.*?)$', twittertext)[0]
+            if '/' in twitter:
+                twitter = twitter.split('/')[0]
+            break
+    instagramtags = bs.find_all('a', href=re.compile('instagram.com/*?'))
+    instagram = None
+    for instagramtag in instagramtags:
+        if instagramtag.parent.name != 'del':
+            instagramtext = instagramtag['href'].rstrip('/')
+            instagram = re.findall('instagram.com/(.*?)$', instagramtext)[0]
+            if '/' in instagram:
+                instagram = instagram.split('/')[0]
+            break
+
+    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]", actname,birth,height,cups,bust,waist,hips,bloodtype,birthplace,hobby,f'twitter@{twitter}',f'instagram@{instagram}')
+    session = DBHelper.get_session()
     actress = session.query(Actress).filter(Actress.actname == actname).first()
     if actress is None:
-        actress=Actress()
-        session.add(actress)
+        return
+        # actress=Actress()
+        # session.add(actress)
 
     actress.actname=actname
-    if birth is not None:
+    if birth and not actress.birthday:
         actress.birthday=birth
-    if height is not None:
+    if height and not actress.height:
         actress.height=height
-    if cups is not None:
+    if cups and not actress.cup:
         actress.cup=cups
-    if bust is not None:
+    if bust and not actress.bust:
         actress.bust=bust
-    if waist is not None:
+    if waist and not actress.waist:
         actress.waist=waist
-    if hips is not None:
+    if hips and not actress.hips:
         actress.hips=hips
-    if birthplace is not None:
+    if birthplace and not actress.birthplace:
         actress.birthplace=birthplace
-    if hobby is not None:
+    if hobby and not actress.hobby:
         actress.hobby=hobby
-    if piccode is not None:
-        actress.piccode=piccode
+    if bloodtype and not actress.bloodtype:
+        actress.bloodtype=bloodtype
+    if twitter and not actress.twitter:
+        actress.twitter=twitter
+    if instagram and not actress.instagram:
+        actress.instagram=instagram
     session.commit()
+    session.close()
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]{actname} end")
+
+def updates():
+    d1 = sqlhelper.fetchall(
+        'SELECT actname,id from t_actress a WHERE EXISTS (SELECT 1 FROM t_av_actress b where b.actress_id=a.id) ORDER BY id')
+
+    resultcount = len(d1)
+    with ThreadPoolExecutor(max_workers=8) as t:
+        for i in range(0, resultcount):
+            if sqlhelper.fetchone('select count(1) as c from t_actress where actname=%s', d1[i]['actname'])['c'] == 1:
+                t.submit(updateactressinfo, d1[i]['actname'])
+
+    for item in d1:
+        if sqlhelper.fetchone('select count(1) as c from t_actress where actname=%s',item['actname'])['c']==1:
+            updateactressinfo(item['actname'])
+def main():
+    result=sqlhelper.fetchall("SELECT actname from t_actress a WHERE actname>=%s and fanzaid is null and EXISTS (SELECT 1 FROM t_av_actress b where b.actress_id=a.id) ORDER BY actname",
+                              '')
+    resultcount=len(result)
+    with ThreadPoolExecutor(max_workers=8) as t:
+        for i in range(0, resultcount):
+            t.submit(updateactressinfo, result[i]['actname'])
+
+if __name__ == '__main__':
+    updates()
+    #updateactressinfo('堺希美',DBHelper.session)

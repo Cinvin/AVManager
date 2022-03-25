@@ -63,8 +63,8 @@ def check_movie_exist_with_title_similar(code,title):
         l2=len(t2)
         similar = SequenceMatcher(None, t1, t2).ratio()
         if similar>=0.2*min(l1,l2)/max(l1,l2):
-            return True
-    return False
+            return av
+    return None
 
 def get_movie_obj(code,studio=None, studio_id=None):
     if not studio and not studio_id:
@@ -84,7 +84,8 @@ def get_movie_by_cid(source,cid):
 
 def save_movie(code, title, category=1, length=None, rdate=None, director=None, studio=None, label=None, series=None,
                piccode=None, piccount=0, cid=None,source:int=1,
-               actresslist: list = [], genrelist: list = [],histrionlist: list = [] ,id=None):
+               actresslist: list = [], genrelist: list = [],histrionlist: list = [] ,id=None,
+               actress_fanzaidlist : dict=None,histrion_fanzaidlist : dict=None):
 
     if not cid and source == 1:
         cid = piccode
@@ -158,40 +159,6 @@ def save_movie(code, title, category=1, length=None, rdate=None, director=None, 
 
     avitem.cid=cid
 
-
-    #if len(actresslist) > 0:
-    actresses = session.query(Actress).filter(Actress.actname.in_(actresslist)).all()
-    for actname in actresslist:
-        if len(actname) > 64:
-            continue
-        found = False
-        for act in actresses:
-            if act.actname == actname:
-                found = True
-                break
-        if not found:
-            act = Actress()
-            act.actname = actname
-            actresses.append(act)
-            session.add(act)
-    avitem.actresses = actresses
-    #if len(histrionlist) > 0:
-    histrions = session.query(Histrion).filter(Histrion.actname.in_(histrionlist)).all()
-    for actname in histrionlist:
-        if len(actname) > 64:
-            continue
-        found = False
-        for act in histrions:
-            if act.actname == actname:
-                found = True
-                break
-        if not found:
-            act = Histrion()
-            act.actname = actname
-            histrions.append(act)
-            session.add(act)
-    avitem.histrions = histrions
-    #if len(genrelist) > 0:
     genres = session.query(Genre).filter(Genre.name_ja.in_(genrelist)).all()
     for genrename in genrelist:
         found = False
@@ -207,6 +174,51 @@ def save_movie(code, title, category=1, length=None, rdate=None, director=None, 
             genres.append(gr)
             session.add(gr)
     avitem.genres = genres
+
+    actresses = session.query(Actress).filter(1 == 2).all()
+    if actress_fanzaidlist:
+        for fanzaid, actname in actress_fanzaidlist.items():
+            actressitem = session.query(Actress).filter(Actress.fanzaid == fanzaid).first()
+            if not actressitem:
+                save_actress_fanzaid(actname=actname, fanzaid=fanzaid)
+                actressitem = session.query(Actress).filter(Actress.fanzaid == fanzaid).first()
+            actresses.append(actressitem)
+    else:
+        for actname in actresslist:
+            actressitem = session.query(Actress).filter(Actress.actname == actname).first()
+            if not actressitem:
+                if len(actname) > 64:
+                    continue
+                act = Actress()
+                act.actname = actname
+                actresses.append(act)
+                session.add(act)
+            else:
+                actresses.append(actressitem)
+    avitem.actresses = actresses
+
+    histrions = session.query(Histrion).filter(1 == 2).all()
+    if histrion_fanzaidlist:
+        for fanzaid, actname in histrion_fanzaidlist.items():
+            actressitem = session.query(Histrion).filter(Histrion.fanzaid == fanzaid).first()
+            if not actressitem:
+                save_histrion_fanzaid(actname=actname, fanzaid=fanzaid)
+                actressitem = session.query(Histrion).filter(Histrion.fanzaid == fanzaid).first()
+            histrions.append(actressitem)
+    else:
+        for actname in histrionlist:
+            histrionitem = session.query(Histrion).filter(Histrion.actname == actname).first()
+            if not histrionitem:
+                if len(actname) > 64:
+                    continue
+                act = Histrion()
+                act.actname = actname
+                histrions.append(act)
+                session.add(act)
+            else:
+                histrions.append(histrionitem)
+    avitem.histrions = histrions
+
     printtext = f"[{datetime.now().strftime('%m-%d %H:%M:%S')}] {avitem.cid} {avitem.code} {avitem.title} {avitem.rdate}"
     session.commit()
     session.close()
@@ -216,48 +228,73 @@ def save_movie(code, title, category=1, length=None, rdate=None, director=None, 
         printtext+=' update'
     print(printtext)
 
-def save_movie_actress(cid,source,actresslist,av_id=None):
+def save_movie_actress(cid,source,actresslist,av_id=None,fanzaidlist : dict=None):
+    '''
+    save movie actress
+    :param cid:
+    :param source:
+    :param actresslist:
+    :param av_id:
+    :param fanzaidlist: type:dict{fanzaid:actname}
+    :return:
+    '''
     if av_id:
         avitem = session.query(AV).filter_by(id=av_id).first()
     else:
         avitem = get_movie_by_cid(source, cid)
     if not avitem:
         return
-    actresses = session.query(Actress).filter(Actress.actname.in_(actresslist)).all()
-    for actname in actresslist:
-        if len(actname) > 64:
-            continue
-        found = False
-        for act in actresses:
-            if act.actname == actname:
-                found = True
-                break
-        if not found:
-            act = Actress()
-            act.actname = actname
-            actresses.append(act)
-            session.add(act)
+
+    actresses = session.query(Actress).filter(1 == 2).all()
+    if fanzaidlist:
+        for fanzaid,actname in fanzaidlist.items():
+            actressitem=session.query(Actress).filter(Actress.fanzaid==fanzaid).first()
+            if not actressitem:
+                save_actress_fanzaid(actname=actname,fanzaid=fanzaid)
+                actressitem = session.query(Actress).filter(Actress.fanzaid == fanzaid).first()
+            actresses.append(actressitem)
+    else:
+        for actname in actresslist:
+            actressitem = session.query(Actress).filter(Actress.actname == actname).first()
+            if not actressitem:
+                if len(actname) > 64:
+                    continue
+                act = Actress()
+                act.actname = actname
+                actresses.append(act)
+                session.add(act)
+            else:
+                actresses.append(actressitem)
     avitem.actresses = actresses
     session.commit()
 
-def save_movie_histrion(cid,source,histrionlist):
-    avitem = get_movie_by_cid(source, cid)
+def save_movie_histrion(cid,source,histrionlist,av_id=None,fanzaidlist : dict=None):
+    if av_id:
+        avitem = session.query(AV).filter_by(id=av_id).first()
+    else:
+        avitem = get_movie_by_cid(source, cid)
     if not avitem:
         return
-    histrions = session.query(Histrion).filter(Histrion.actname.in_(histrionlist)).all()
-    for actname in histrionlist:
-        if len(actname) > 64:
-            continue
-        found = False
-        for act in histrions:
-            if act.actname == actname:
-                found = True
-                break
-        if not found:
-            act = Histrion()
-            act.actname = actname
-            histrions.append(act)
-            session.add(act)
+    histrions = session.query(Histrion).filter(1==2).all()
+    if fanzaidlist:
+        for fanzaid,actname in fanzaidlist.items():
+            actressitem=session.query(Histrion).filter(Histrion.fanzaid==fanzaid).first()
+            if not actressitem:
+                save_histrion_fanzaid(actname=actname,fanzaid=fanzaid)
+                actressitem = session.query(Histrion).filter(Histrion.fanzaid == fanzaid).first()
+            histrions.append(actressitem)
+    else:
+        for actname in histrionlist:
+            histrionitem = session.query(Histrion).filter(Histrion.actname == actname).first()
+            if not histrionitem:
+                if len(actname) > 64:
+                    continue
+                act = Histrion()
+                act.actname = actname
+                histrions.append(act)
+                session.add(act)
+            else:
+                histrions.append(histrionitem)
     avitem.histrions = histrions
     session.commit()
 
@@ -284,11 +321,14 @@ def save_mgscode(studio,mgscode):
 
 def save_actress_fanzaid(actname,fanzaid):
     actressobj = session.query(Actress).filter_by(actname=actname).first()
-    if actressobj is None:
-        actressobj = Actress()
-        session.add(actressobj)
-        actressobj.actname = actname
-    actressobj.fanzaid = fanzaid
+    if not actressobj or (actressobj.fanzaid and actressobj.fanzaid != fanzaid):
+        # 同名不同fanzaid也new 例: name:沢村麻耶 fanzaid:1000370&1001663
+        newactressobj = Actress()
+        newactressobj.actname = actname
+        newactressobj.fanzaid = fanzaid
+        session.add(newactressobj)
+    else:
+        actressobj.fanzaid = fanzaid
     session.commit()
 
 def get_actname_by_fanzaid(fanzaid):
@@ -308,11 +348,14 @@ def save_actress_mainid(actname,mainid):
 
 def save_histrion_fanzaid(actname,fanzaid):
     histrionobj = session.query(Histrion).filter_by(actname=actname).first()
-    if histrionobj is None:
-        histrionobj = Histrion()
-        session.add(histrionobj)
-        histrionobj.actname = actname
-    histrionobj.fanzaid = fanzaid
+    if not histrionobj or (histrionobj.fanzaid and histrionobj.fanzaid != fanzaid):
+        # 同名不同fanzaid也new
+        newhistrionobj = Histrion()
+        newhistrionobj.actname = actname
+        newhistrionobj.fanzaid = fanzaid
+        session.add(newhistrionobj)
+    else:
+        histrionobj.fanzaid = fanzaid
     session.commit()
 
 def save_studio_fanzaid(studio,fanzaid):

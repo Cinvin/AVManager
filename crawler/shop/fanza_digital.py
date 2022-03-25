@@ -2,13 +2,11 @@ from datetime import datetime,timedelta
 import gzip
 import re
 
-from sqlalchemy import or_
-
 import sqlhelper
 from crawler import Tools, DBHelper,CrawlerHelper
 from bs4 import BeautifulSoup
 from model import *
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from crawler.shop import fanza_actinfo
 
 dmmcookie={'age_check_done':'1'}
 
@@ -88,6 +86,8 @@ def crawler_dmmmoive(cid):
 
     actslist=[]
     histrionlist=[]
+    actsdict={}
+    histriondict={}
     findactajax=re.findall('/digital/videoa/-/detail/ajax-performer/=/data=(.*?)/',html)
     bsact=bs
     if len(findactajax)>0:
@@ -100,15 +100,11 @@ def crawler_dmmmoive(cid):
         actid = re.findall('/id=(.*?)/', actstag['href'])[0]
 
         if 'actress' in actstag['href']:
-            dbactname = DBHelper.get_actname_by_fanzaid(actid)
-            if dbactname:
-                actname = dbactname
-            else:
-                DBHelper.save_actress_fanzaid(actname, actid)
-            actslist.append(actname)
+            actsdict[actid]=actname
+            if not sqlhelper.fetchone('select 1 from t_actress where fanzaid=%s',actid):
+                fanza_actinfo.update_actress_info_by_id(actid)
         elif 'histrion' in actstag['href']:
-            histrionlist.append(actname)
-            DBHelper.save_histrion_fanzaid(actname, actid)
+            histriondict[actid] = actname
     genrelist = []
     dicttemp={'data-i3pst':"info_genre"}
     genretags = bs.find_all('a',dicttemp)
@@ -124,13 +120,14 @@ def crawler_dmmmoive(cid):
     print(f'label:{label}')
     print(f'series:{series}')
     print(f'pic:{piccode} count:{piccount}')
-    print(actslist)
-    print(histrionlist)
+    print(actsdict)
+    print(histriondict)
     print(genrelist)
     DBHelper.save_movie(code=code,cid=cid,title=title, length=length, rdate=rdate,
                         director=director, studio=studio, label=label, series=series,
                         piccode=piccode, piccount=piccount, source=1,
-                        actresslist=actslist, genrelist=genrelist,histrionlist=histrionlist)
+                        actresslist=actslist, genrelist=genrelist,histrionlist=histrionlist,
+                        actress_fanzaidlist=actsdict,histrion_fanzaidlist=histriondict)
 
 def spider_by_sitemap():
     url='https://www.dmm.co.jp/digital/sitemap_index.xml'
@@ -171,11 +168,11 @@ def spider_by_sitemap():
                 avitem = DBHelper.get_movie_by_cid(1, cid)
                 if not avitem:
                     crawler_dmmmoive(cid)
-                else:
-                    if avitem.piccount==0 and avitem.rdate>datetime.now()-timedelta(days=30):
-                        crawler_dmmmoive(cid)
-                    elif not avitem.rdate:
-                        crawler_dmmmoive(cid)
+                # else:
+                #     if avitem.piccount==0 and avitem.rdate>datetime.now()-timedelta(days=30):
+                #         crawler_dmmmoive(cid)
+                #     elif not avitem.rdate:
+                #         crawler_dmmmoive(cid)
 
 def spider_newrelease():
     for pageindex in range(1,31):# maxpage:417
@@ -214,11 +211,36 @@ def spider_reserve():
             else:
                 if avitem.piccount == 0:
                     crawler_dmmmoive(cid)
-        pageindex+=1
-        if not bs.find('a',href=f'/digital/videoa/-/list/=/reserve=only/sort=date/page={pageindex}/'):
+        if len(re.findall('>次へ</a>', html.text)) > 0:
+            pageindex += 1
+        else:
+            break
+
+def spider_byactid(actfanzaid):
+    pageindex = 1
+    while True:
+        dvdlisturl = f'https://www.dmm.co.jp/digital/videoa/-/list/=/article=actress/id={actfanzaid}/sort=date/page={pageindex}/'
+        print(dvdlisturl)
+        html = CrawlerHelper.get_requests(dvdlisturl, cookies=dmmcookie)
+        if not html or html.status_code == 404:
+            return
+        bs = BeautifulSoup(html.text, "html.parser")
+        actname = bs.find('title').get_text().replace(' - エロ動画・アダルトビデオ - FANZA動画','')
+        if '(' in actname:
+            actname=actname.rsplit('(',maxsplit=1)[0]
+        dvdurls = bs.find_all('a', href=re.compile('https://www.dmm.co.jp/digital/videoa/-/detail/=/cid='))
+        for dvdurl in dvdurls:
+            cid = re.findall('https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=(.*?)/', dvdurl['href'])[0]
+            result=sqlhelper.fetchone('select 1 from t_av_actress a join t_av b on a.av_id=b.id join t_actress c on a.actress_id=c.id where b.cid=%s and b.source=1 and c.fanzaid=%s',cid,actfanzaid)
+            if not result:
+                crawler_dmmmoive(cid)
+        if len(re.findall('>次へ</a>', html.text)) > 0:
+            pageindex += 1
+        else:
             break
 
 if __name__ == '__main__':
-    spider_by_sitemap()
+    pass
+    #spider_by_sitemap()
     #spider_reserve()
     #spider_newrelease()
