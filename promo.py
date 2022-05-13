@@ -32,6 +32,9 @@ def getpv(av:AV):
             pvcodelist.append(vid)
         for pvcode in pvcodelist:
             result.append(
+                f'https://cc3001.dmm.co.jp/litevideo/freepv/{pvcode[0]}/{pvcode[0:3]}/{pvcode}/{pvcode}_mhb_w.mp4')
+        for pvcode in pvcodelist:
+            result.append(
                 f'https://cc3001.dmm.co.jp/litevideo/freepv/{pvcode[0]}/{pvcode[0:3]}/{pvcode}/{pvcode}_dmb_w.mp4')
         for pvcode in pvcodelist:
             result.append(
@@ -39,9 +42,6 @@ def getpv(av:AV):
         for pvcode in pvcodelist:
             result.append(
                 f'https://cc3001.dmm.co.jp/litevideo/freepv/{pvcode[0]}/{pvcode[0:3]}/{pvcode}/{pvcode}_sm_w.mp4')
-        for pvcode in pvcodelist:
-            result.append(
-                f'https://cc3001.dmm.co.jp/litevideo/freepv/{pvcode[0]}/{pvcode[0:3]}/{pvcode}/{pvcode}_sm_s.mp4')
     elif av.source==2:
         #mgs
         if av.piccode:

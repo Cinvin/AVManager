@@ -6,7 +6,7 @@ import sqlhelper
 from crawler import Tools, DBHelper,CrawlerHelper
 from bs4 import BeautifulSoup
 from model import *
-from crawler.shop import fanza_actinfo
+from crawler.shop import fanza_actinfo, dmm
 
 dmmcookie={'age_check_done':'1'}
 
@@ -156,23 +156,13 @@ def spider_by_sitemap():
                 title=None
                 rdate=None
                 if video:
+                    # 开始
                     publication_date = video.publication_date.get_text()[0:10]
+                    # 结束
                     expiration_date = video.expiration_date.get_text()[0:10]
-                    rdate=publication_date
-                    if rdate == '2038-01-01':
-                        rdate=expiration_date
-                    if rdate == '2038-01-01':
-                        rdate = None
-                    if rdate:
-                        rdate=datetime.fromisoformat(rdate)
                 avitem = DBHelper.get_movie_by_cid(1, cid)
                 if not avitem:
-                    crawler_dmmmoive(cid)
-                # else:
-                #     if avitem.piccount==0 and avitem.rdate>datetime.now()-timedelta(days=30):
-                #         crawler_dmmmoive(cid)
-                #     elif not avitem.rdate:
-                #         crawler_dmmmoive(cid)
+                    dmm.getDigitalVideoaItemById(cid)
 
 def spider_newrelease():
     for pageindex in range(1,31):# maxpage:417
@@ -240,7 +230,6 @@ def spider_byactid(actfanzaid):
             break
 
 if __name__ == '__main__':
-    pass
-    #spider_by_sitemap()
+    spider_by_sitemap()
     #spider_reserve()
     #spider_newrelease()

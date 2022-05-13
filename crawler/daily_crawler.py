@@ -8,6 +8,7 @@ import shop.fanza_dvd as fanza_dvd
 import shop.fanza_amateur as fanza_amateur
 import shop.fc2 as fc2
 import shop.MGStage as mgs
+import shop.dmm as dmm
 import studio.tokyo_hot as tokyo_hot
 import studio.heyzo as heyzo
 import studio._1pondo as _1pondo
@@ -40,17 +41,29 @@ try:
     fc2.spider_movielist()
 except Exception as ex:
     print(ex)
+# try:
+#     fanza_digital.spider_reserve()
+#     fanza_digital.spider_newrelease()
+# except Exception as ex:
+#     print(ex)
+# try:
+#     fanza_dvd.spider_dmm_dvd_newrelease()
+# except Exception as ex:
+#     print(ex)
+# try:
+#     fanza_amateur.spider_newrelease()
+# except Exception as ex:
+#     print(ex)
 try:
-    fanza_digital.spider_reserve()
-    fanza_digital.spider_newrelease()
+    dmm.getNewRealseDigitalVideoaItem()
 except Exception as ex:
     print(ex)
 try:
-    fanza_dvd.spider_dmm_dvd_newrelease()
+    dmm.getNewRealseMonoDVDItem()
 except Exception as ex:
     print(ex)
 try:
-    fanza_amateur.spider_newrelease()
+    dmm.getNewRealseDigitalVideocItem()
 except Exception as ex:
     print(ex)
 try:
@@ -91,6 +104,8 @@ r2=sqlhelper.fetchone('select count(1) as c from t_av')['c']
 
 if platform.system() == 'Darwin':
     Tools.show_notification('python', f'added {r2-r1} information')
+
+
 
 #crontab:
 #05 20 * * * ~/PythonEnvi/bin/python3 ~/PycharmProjects/AVManager/crawler/daily_crawler.py

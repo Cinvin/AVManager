@@ -66,6 +66,9 @@ def check_movie_exist_with_title_similar(code,title):
             return av
     return None
 
+def get_actress_by_fanza_id(fanza_actress_id):
+    return session.query(Actress).filter(Actress.fanzaid == fanza_actress_id).first()
+
 def get_movie_obj(code,studio=None, studio_id=None):
     if not studio and not studio_id:
         return None
@@ -255,7 +258,13 @@ def save_movie_actress(cid,source,actresslist,av_id=None,fanzaidlist : dict=None
             actresses.append(actressitem)
     else:
         for actname in actresslist:
-            actressitem = session.query(Actress).filter(Actress.actname == actname).first()
+            actressitem = None
+            queryactresses = session.query(Actress).filter(Actress.actname == actname,
+                                                           Actress.fanzaid is None).all()
+            for act in queryactresses:
+                if act.actname == actname:
+                    actressitem = act
+                    break
             if not actressitem:
                 if len(actname) > 64:
                     continue
@@ -297,6 +306,66 @@ def save_movie_histrion(cid,source,histrionlist,av_id=None,fanzaidlist : dict=No
                 histrions.append(histrionitem)
     avitem.histrions = histrions
     session.commit()
+
+def save_actress(actname,act_fanzaid=None,birthday=None,height=None,bloodtype=None,
+                 cup=None,bust=None,waist=None,hips=None,
+                 birthplace=None,hobby=None,
+                 piccode=None,avatar=None):
+    actress = None
+    isnew = False
+    if act_fanzaid:
+        actress = session.query(Actress).filter(Actress.fanzaid == act_fanzaid).first()
+    if not actress:
+        queryactresses = session.query(Actress).filter(Actress.actname == actname).all()
+        for act in queryactresses:
+            if act.fanzaid and act_fanzaid:
+                continue
+            if act.actname==actname:
+                actress=act
+                break
+    if not actress:
+        actress = Actress()
+        actress.actname = actname
+        session.add(actress)
+        isnew = True
+
+    actress.actname = actname
+    if birthday and not actress.birthday:
+        actress.birthday = birthday
+    if height and not actress.height:
+        actress.height = height
+    if bloodtype and not actress.bloodtype:
+        actress.bloodtype = bloodtype
+    if cup and not actress.cup:
+        actress.cup = cup
+    if bust and not actress.bust:
+        actress.bust = bust
+    if waist and not actress.waist:
+        actress.waist = waist
+    if hips and not actress.hips:
+        actress.hips = hips
+    if birthplace and not actress.birthplace:
+        actress.birthplace = birthplace
+    if hobby and not actress.hobby:
+        actress.hobby = hobby
+    if piccode:
+        actress.piccode = piccode
+    if avatar:
+        actress.avatar = avatar
+    elif actress.avatar and 'pics.dmm' in actress.avatar:
+        actress.piccode = None
+        actress.avatar = None
+    if not actress.fanzaid:
+        actress.fanzaid = act_fanzaid
+
+    printtext = f"[{datetime.now().strftime('%m-%d %H:%M:%S')}] {actress.actname} {actress.fanzaid} {actress.birthday} {actress.avatar}"
+    session.commit()
+    session.close()
+    if isnew:
+        printtext += ' new'
+    else:
+        printtext += ' update'
+    print(printtext)
 
 def save_magnet(av_id,hashinfo,description,size,date):
     if session.query(Magnet).filter(Magnet.hashinfo==hashinfo).first():

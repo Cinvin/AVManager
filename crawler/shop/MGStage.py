@@ -1,5 +1,7 @@
 import json
 import string
+
+import requests
 from bs4 import BeautifulSoup
 import re
 
@@ -197,7 +199,8 @@ def spider_moviePage(url):
                 actname=acttag.get_text().strip()
                 actimgurl=f'https://static.mgstage.com/mgs/img/common/actress/{actname}.jpg'
                 if bs.find('img',src=actimgurl) and not sqlhelper.fetchone('select 1 from t_actress where actname=%s',actname):
-                    sqlhelper.execute('insert into t_actress(actname,avatar) values(%s,%s)',actname,actimgurl)
+                    if requests.head(actimgurl).status_code==200:
+                        sqlhelper.execute('insert into t_actress(actname,avatar) values(%s,%s)',actname,actimgurl)
                     #insert into javlibrary_maker(studio_code,studio_name) values(%s,%s)
                 actslist.append(acttag.get_text().strip())
         elif tkey == 'メーカー：':
@@ -296,7 +299,7 @@ def title_transfrom(title):
     return title
 
 if __name__ == '__main__':
-    #spider_newrelease()
+    spider_newrelease()
     #spider_reservation()
     spider_by_sitemap(freq=freq)
     #spider_by_maker(freq=freq)

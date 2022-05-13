@@ -1,10 +1,10 @@
 # AVManager
-    龟速爬取 JAV元数据,在avmoo前端基础上做了影片收藏夹,预告片功能,女优的人脸识别 功能  
+  仅为了学习python爬虫和Flask框架知识,JAV元数据爬虫,用avmoo的前端,在此基础上做了影片收藏夹,预告片功能,女优的人脸识别 功能  
 
 ### 获取站点
-
-- [FANZA(dmm) 動画,素人,通販](https://www.dmm.co.jp/)
-- [MGStage](http://mgstage.com/)
+- ~~FANZA(https://www.dmm.co.jp/)~~ (弃用 因为只有日本IP才能访问 而且用DMM API 同样可获取到)
+- [DMM API](https://affiliate.dmm.com/api/v3/itemlist.html) (DMM旗下的FANZA是Javbus,JAVLibrary等网站内容的主要来源)
+- [MGStage](http://mgstage.com/) (制造商prestige的电商网站)
 - [AVE](https://www.aventertainments.com/)
 - [FC2-PPV(部分)](https://adult.contents.fc2.com) 
 - [1pondo(一本道)](https://www.1pondo.tv) 
@@ -24,3 +24,4 @@ predict3094:前3094名女优训练出来的识别模型
 [MySQL数据库(60w+条)](https://github.com/Cinvin/AVManager/tree/master/database)
 
 main.py:启动web(flask)  
+crawler/daila_craler.py:日常爬取 加入每日定时任务来保持获取最新

@@ -5,7 +5,7 @@ from sqlalchemy import and_
 
 from crawler import Tools, DBHelper, CrawlerHelper
 from bs4 import BeautifulSoup
-
+from crawler.shop import dmm
 import sqlhelper
 from model import AV
 
@@ -165,16 +165,7 @@ def spider_by_sitemap():
                 cid = re.findall('https://www.dmm.co.jp/digital/videoc/-/detail/=/cid=(.*?)/', loc)[0]
                 if cid in cidlist:
                     continue
-                title=None
-                rdate=None
-                if video:
-                    rdate=video.publication_date.get_text()[0:10]
-                    if rdate=='2038-01-01':
-                        rdate=video.expiration_date.get_text()[0:10]
-                    if rdate=='2038-01-01':
-                        rdate=None
-                    title = video.title.get_text()
-                crawler_dmm_amateur_page(cid)
+                dmm.getDigitalVideocItemById(cid)
 
 def spider_newrelease():
     for pageindex in range(1,31):# maxpage:292
