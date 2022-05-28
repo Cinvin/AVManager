@@ -1,0 +1,9 @@
+flask
+flask-sqlalchemy
+flask-cors
+pymysql
+bs4
+requests
+face-recognition
+joblib
+pyecharts

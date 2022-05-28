@@ -189,8 +189,8 @@ def save_dvd_to_server(item):
     studio = item['iteminfo']['maker'][0]['name']
 
     if 'genre' in item['iteminfo']:
-        # 排除蓝光,出口，活动，DOD商品
-        exceptList = [6104, 6147, 6997, 6993, 6992, 6991, 6147,6561]
+        # 排除蓝光,出口，活动，DOD商品,ディスクオンデマンド
+        exceptList = [6104, 6147, 6997, 6993, 6992, 6991, 6147,6561,6797,300019]
         for genreItem in item['iteminfo']['genre']:
             if genreItem['id'] in exceptList:
                 return

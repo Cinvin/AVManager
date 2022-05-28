@@ -178,4 +178,4 @@ class Magnet(db.Model):
     date = db.Column(db.String(40), nullable=False)
     av_id = db.Column(db.Integer, db.ForeignKey('t_av.id',ondelete='CASCADE'))
 
-    __mapper_args__ = {"order_by": date.desc()}
+    # __mapper_args__ = {"order_by": date.desc()}
